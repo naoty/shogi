@@ -5,3 +5,5 @@ pre-commit:
       run: pnpm vitest related --run ${staged_files}
     - name: check
       run: pnpm biome check --staged --no-errors-on-unmatched
+    - name: typecheck
+      run: pnpm --recursive typecheck
