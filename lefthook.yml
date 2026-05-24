@@ -1,0 +1,5 @@
+pre-commit:
+  parallel: true
+  jobs:
+    - name: biome
+      run: pnpm check --staged
