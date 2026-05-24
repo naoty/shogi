@@ -1,5 +1,7 @@
 pre-commit:
   parallel: true
   jobs:
-    - name: biome
-      run: pnpm check --staged
+    - name: test
+      run: pnpm vitest related --run ${staged_files}
+    - name: check
+      run: pnpm biome check --staged --no-errors-on-unmatched
