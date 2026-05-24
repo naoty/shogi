@@ -5,9 +5,13 @@
   "type": "module",
   "packageManager": "pnpm@11.1.1",
   "scripts": {
-    "check": "echo \"No checks configured yet\""
+    "check": "biome check .",
+    "check:fix": "biome check . --fix"
   },
   "engines": {
     "node": ">=24"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.15"
   }
 }
