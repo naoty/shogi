@@ -1,7 +1,7 @@
 /**
  * 局面
  */
-type _Position = {
+export type Position = {
   board: Board;
   hands: Hands;
   turn: Color;
@@ -10,17 +10,17 @@ type _Position = {
 /**
  * 盤
  */
-type Board = Record<SquareKey, Piece | null>;
+export type Board = Record<SquareKey, Piece | null>;
 
 /**
  * 両者の持ち駒
  */
-type Hands = Record<Color, Hand>;
+export type Hands = Record<Color, Hand>;
 
 /**
  * 持ち駒
  */
-type Hand = Record<UnpromotedPieceType, number>;
+export type Hand = Record<UnpromotedPieceType, number>;
 
 /**
  * マス
@@ -69,7 +69,7 @@ type PieceType = UnpromotedPieceType | PromotedPieceType;
 /**
  * 通常の駒の種類
  */
-type UnpromotedPieceType =
+export type UnpromotedPieceType =
   | "king" // 王/玉
   | "rook" // 飛
   | "bishop" // 角
@@ -93,7 +93,7 @@ type PromotedPieceType =
 /**
  * 手
  */
-type _Move = NormalMove | DropMove;
+export type Move = NormalMove | DropMove;
 
 /**
  * 指し手
