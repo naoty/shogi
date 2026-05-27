@@ -1,0 +1,33 @@
+import { columnOf, rowOf, squareOf, squares } from "./square";
+import type { Move, Position } from "./types";
+
+export function listPseudoLegalMoves(position: Position): Move[] {
+  const moves: Move[] = [];
+
+  for (const square of squares) {
+    const piece = position.board[square];
+
+    if (piece === null || piece.color !== position.turn) {
+      continue;
+    }
+
+    if (piece.type === "pawn") {
+      const fromColumn = columnOf(square);
+      const fromRow = rowOf(square);
+
+      const toRow = piece.color === "black" ? fromRow - 1 : fromRow + 1;
+      const to = squareOf(fromColumn, toRow);
+
+      if (to !== null) {
+        moves.push({
+          type: "normal",
+          from: square,
+          to,
+          promote: false,
+        });
+      }
+    }
+  }
+
+  return moves;
+}
