@@ -10,7 +10,7 @@ export type Position = {
 /**
  * 盤
  */
-export type Board = Record<SquareKey, Piece | null>;
+export type Board = Record<Square, Piece | null>;
 
 /**
  * 両者の持ち駒
@@ -25,30 +25,22 @@ export type Hand = Record<UnpromotedPieceType, number>;
 /**
  * マス
  */
-type Square = {
-  column: Column;
-  row: Row;
-};
-
-/**
- * マスのキー
- */
-type SquareKey = `${Column}${Row}`;
+export type Square = `${Column}${Row}`;
 
 /**
  * 筋
  */
-type Column = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type Column = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 /**
  * 段
  */
-type Row = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type Row = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 /**
  * 駒
  */
-type Piece = {
+export type Piece = {
   color: Color;
   type: PieceType;
 };
@@ -59,12 +51,12 @@ type Piece = {
  * - black: 先手
  * - white: 後手
  */
-type Color = "black" | "white";
+export type Color = "black" | "white";
 
 /**
  * 駒の種類
  */
-type PieceType = UnpromotedPieceType | PromotedPieceType;
+export type PieceType = UnpromotedPieceType | PromotedPieceType;
 
 /**
  * 通常の駒の種類
@@ -82,7 +74,7 @@ export type UnpromotedPieceType =
 /**
  * 成駒の種類
  */
-type PromotedPieceType =
+export type PromotedPieceType =
   | "rook+" // 龍
   | "bishop+" // 馬
   | "silver+" // 成銀
@@ -98,7 +90,7 @@ export type Move = NormalMove | DropMove;
 /**
  * 指し手
  */
-type NormalMove = {
+export type NormalMove = {
   type: "normal";
   from: Square;
   to: Square;
@@ -108,7 +100,7 @@ type NormalMove = {
 /**
  * 持ち駒を打つ手
  */
-type DropMove = {
+export type DropMove = {
   type: "drop";
   piece: UnpromotedPieceType;
   to: Square;
