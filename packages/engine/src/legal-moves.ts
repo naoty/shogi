@@ -1,5 +1,5 @@
 import { columnOf, rowOf, squareOf, squares } from "./square";
-import type { Move, Position } from "./types";
+import type { Color, Move, Position, Square } from "./types";
 
 export function listPseudoLegalMoves(position: Position): Move[] {
   const moves: Move[] = [];
@@ -40,16 +40,7 @@ export function listPseudoLegalMoves(position: Position): Move[] {
         });
       }
 
-      if (piece.color === "black" && toRow <= 3) {
-        moves.push({
-          type: "normal",
-          from: square,
-          to,
-          promote: true,
-        });
-      }
-
-      if (piece.color === "white" && toRow >= 7) {
+      if (canPromote(piece.color, square, to)) {
         moves.push({
           type: "normal",
           from: square,
@@ -61,4 +52,15 @@ export function listPseudoLegalMoves(position: Position): Move[] {
   }
 
   return moves;
+}
+
+function canPromote(color: Color, from: Square, to: Square): boolean {
+  const fromRow = rowOf(from);
+  const toRow = rowOf(to);
+
+  if (color === "black") {
+    return fromRow <= 3 || toRow <= 3;
+  } else {
+    return fromRow >= 7 || toRow >= 7;
+  }
 }
