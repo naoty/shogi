@@ -12,12 +12,7 @@ describe("listPseudoLegalMoves", () => {
       const position = { board, hands, turn: "black" as const };
       const result = listPseudoLegalMoves(position);
       expect(result).toEqual([
-        {
-          type: "normal",
-          from: "55",
-          to: "54",
-          promote: false,
-        },
+        { type: "normal", from: "55", to: "54", promote: false },
       ]);
     });
 
@@ -29,23 +24,8 @@ describe("listPseudoLegalMoves", () => {
       const position = { board, hands, turn: "white" as const };
       const result = listPseudoLegalMoves(position);
       expect(result).toEqual([
-        {
-          type: "normal",
-          from: "55",
-          to: "56",
-          promote: false,
-        },
+        { type: "normal", from: "55", to: "56", promote: false },
       ]);
-    });
-
-    test("これ以上前に進めない場合、手を返さない", () => {
-      const board = setupBoard({
-        "51": { color: "black", type: "pawn" },
-      });
-      const hands = setupHands();
-      const position = { board, hands, turn: "black" as const };
-      const result = listPseudoLegalMoves(position);
-      expect(result).toEqual([]);
     });
 
     test("前に自分の駒がある場合、手を返さない", () => {
@@ -68,12 +48,7 @@ describe("listPseudoLegalMoves", () => {
       const position = { board, hands, turn: "black" as const };
       const result = listPseudoLegalMoves(position);
       expect(result).toEqual([
-        {
-          type: "normal",
-          from: "55",
-          to: "54",
-          promote: false,
-        },
+        { type: "normal", from: "55", to: "54", promote: false },
       ]);
     });
 
@@ -85,18 +60,8 @@ describe("listPseudoLegalMoves", () => {
       const position = { board, hands, turn: "black" as const };
       const result = listPseudoLegalMoves(position);
       expect(result).toEqual([
-        {
-          type: "normal",
-          from: "54",
-          to: "53",
-          promote: false,
-        },
-        {
-          type: "normal",
-          from: "54",
-          to: "53",
-          promote: true,
-        },
+        { type: "normal", from: "54", to: "53", promote: false },
+        { type: "normal", from: "54", to: "53", promote: true },
       ]);
     });
 
@@ -108,13 +73,108 @@ describe("listPseudoLegalMoves", () => {
       const position = { board, hands, turn: "black" as const };
       const result = listPseudoLegalMoves(position);
       expect(result).toEqual([
-        {
-          type: "normal",
-          from: "52",
-          to: "51",
-          promote: true,
-        },
+        { type: "normal", from: "52", to: "51", promote: true },
       ]);
+    });
+  });
+
+  describe("香を進める手を返す", () => {
+    test("先手の場合、先手の方向に進める手を返す", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "lance" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = listPseudoLegalMoves(position);
+      [
+        { type: "normal", from: "55", to: "54", promote: false },
+        { type: "normal", from: "55", to: "53", promote: false },
+        { type: "normal", from: "55", to: "52", promote: false },
+      ].forEach((move) => {
+        expect(result).toContainEqual(move);
+      });
+    });
+
+    test("後手の場合、後手の方向に進める手を返す", () => {
+      const board = setupBoard({
+        "55": { color: "white", type: "lance" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "white" as const };
+      const result = listPseudoLegalMoves(position);
+      [
+        { type: "normal", from: "55", to: "56", promote: false },
+        { type: "normal", from: "55", to: "57", promote: false },
+        { type: "normal", from: "55", to: "58", promote: false },
+      ].forEach((move) => {
+        expect(result).toContainEqual(move);
+      });
+    });
+
+    test("前に自分の駒がある場合、その手前までの手を返す", () => {
+      const board = setupBoard({
+        "59": { color: "black", type: "lance" },
+        "55": { color: "black", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = listPseudoLegalMoves(position);
+      [
+        { type: "normal", from: "59", to: "58", promote: false },
+        { type: "normal", from: "59", to: "57", promote: false },
+        { type: "normal", from: "59", to: "56", promote: false },
+      ].forEach((move) => {
+        expect(result).toContainEqual(move);
+      });
+    });
+
+    test("前に相手の駒がある場合、その駒を取る手までを返す", () => {
+      const board = setupBoard({
+        "59": { color: "black", type: "lance" },
+        "55": { color: "white", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = listPseudoLegalMoves(position);
+      [
+        { type: "normal", from: "59", to: "58", promote: false },
+        { type: "normal", from: "59", to: "57", promote: false },
+        { type: "normal", from: "59", to: "56", promote: false },
+        { type: "normal", from: "59", to: "55", promote: false },
+      ].forEach((move) => {
+        expect(result).toContainEqual(move);
+      });
+    });
+
+    test("先手の香が3段目以降に進む場合、成る手も含める", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "lance" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = listPseudoLegalMoves(position);
+      [
+        { type: "normal", from: "55", to: "53", promote: true },
+        { type: "normal", from: "55", to: "52", promote: true },
+        { type: "normal", from: "55", to: "51", promote: true },
+      ].forEach((move) => {
+        expect(result).toContainEqual(move);
+      });
+    });
+
+    test("最奥に進む場合、不成を返してはいけない", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "lance" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = listPseudoLegalMoves(position);
+      expect(result).not.toContainEqual({
+        type: "normal",
+        from: "55",
+        to: "51",
+        promote: false,
+      });
     });
   });
 });
