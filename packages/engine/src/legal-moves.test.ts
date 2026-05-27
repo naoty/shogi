@@ -76,5 +76,45 @@ describe("listPseudoLegalMoves", () => {
         },
       ]);
     });
+
+    test("先手の歩が3段目以降に進む場合、成る手も含める", () => {
+      const board = setupBoard({
+        "54": { color: "black", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = listPseudoLegalMoves(position);
+      expect(result).toEqual([
+        {
+          type: "normal",
+          from: "54",
+          to: "53",
+          promote: false,
+        },
+        {
+          type: "normal",
+          from: "54",
+          to: "53",
+          promote: true,
+        },
+      ]);
+    });
+
+    test("最奥に進む場合、不成を返してはいけない", () => {
+      const board = setupBoard({
+        "52": { color: "black", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = listPseudoLegalMoves(position);
+      expect(result).toEqual([
+        {
+          type: "normal",
+          from: "52",
+          to: "51",
+          promote: true,
+        },
+      ]);
+    });
   });
 });

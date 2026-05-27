@@ -28,12 +28,35 @@ export function listPseudoLegalMoves(position: Position): Move[] {
         continue;
       }
 
-      moves.push({
-        type: "normal",
-        from: square,
-        to,
-        promote: false,
-      });
+      if (
+        (piece.color === "black" && toRow > 1) ||
+        (piece.color === "white" && toRow < 9)
+      ) {
+        moves.push({
+          type: "normal",
+          from: square,
+          to,
+          promote: false,
+        });
+      }
+
+      if (piece.color === "black" && toRow <= 3) {
+        moves.push({
+          type: "normal",
+          from: square,
+          to,
+          promote: true,
+        });
+      }
+
+      if (piece.color === "white" && toRow >= 7) {
+        moves.push({
+          type: "normal",
+          from: square,
+          to,
+          promote: true,
+        });
+      }
     }
   }
 
