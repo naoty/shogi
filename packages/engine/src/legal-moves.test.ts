@@ -3,7 +3,7 @@ import { listPseudoLegalMoves } from "./legal-moves";
 import { setupBoard, setupHands } from "./test-data";
 
 describe("listPseudoLegalMoves", () => {
-  describe("歩を前に進める手を返す", () => {
+  describe("歩を進める手を返す", () => {
     test("先手の場合、先手の方向に進める手を返す", () => {
       const board = setupBoard({
         "55": { color: "black", type: "pawn" },
