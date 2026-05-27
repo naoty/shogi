@@ -47,5 +47,34 @@ describe("listPseudoLegalMoves", () => {
       const result = listPseudoLegalMoves(position);
       expect(result).toEqual([]);
     });
+
+    test("前に自分の駒がある場合、手を返さない", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "pawn" },
+        "54": { color: "black", type: "silver" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = listPseudoLegalMoves(position);
+      expect(result).toEqual([]);
+    });
+
+    test("前に相手の駒がある場合、手を返す", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "pawn" },
+        "54": { color: "white", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = listPseudoLegalMoves(position);
+      expect(result).toEqual([
+        {
+          type: "normal",
+          from: "55",
+          to: "54",
+          promote: false,
+        },
+      ]);
+    });
   });
 });

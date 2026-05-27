@@ -18,14 +18,22 @@ export function listPseudoLegalMoves(position: Position): Move[] {
       const toRow = piece.color === "black" ? fromRow - 1 : fromRow + 1;
       const to = squareOf(fromColumn, toRow);
 
-      if (to !== null) {
-        moves.push({
-          type: "normal",
-          from: square,
-          to,
-          promote: false,
-        });
+      if (to === null) {
+        continue;
       }
+
+      const toPiece = position.board[to];
+
+      if (toPiece !== null && toPiece.color === piece.color) {
+        continue;
+      }
+
+      moves.push({
+        type: "normal",
+        from: square,
+        to,
+        promote: false,
+      });
     }
   }
 
