@@ -68,11 +68,7 @@ function listPseudoLegalLanceMoves(board: Board, square: Square): Move[] {
   const fromColumn = columnOf(square);
   const fromRow = rowOf(square);
   const direction = piece.color === "black" ? -1 : 1;
-  for (
-    let toRow = fromRow + direction;
-    1 <= toRow && toRow <= 9;
-    toRow += direction
-  ) {
+  for (let toRow = fromRow + direction; 1 <= toRow && toRow <= 9; toRow += direction) {
     const to = squareOf(fromColumn, toRow);
     if (to === null) {
       break;
@@ -86,6 +82,11 @@ function listPseudoLegalLanceMoves(board: Board, square: Square): Move[] {
 
     if (toPiece !== null && toPiece.color !== piece.color) {
       moves.push({ type: "normal", from: square, to, promote: false });
+
+      if (canPromote(piece.color, square, to)) {
+        moves.push({ type: "normal", from: square, to, promote: true });
+      }
+
       break;
     }
 

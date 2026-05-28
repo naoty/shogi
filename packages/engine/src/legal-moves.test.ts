@@ -53,6 +53,7 @@ describe("listPseudoLegalMoves", () => {
     test("先手の歩が3段目以降に進む場合、成る手も含める", () => {
       const board = setupBoard({
         "54": { color: "black", type: "pawn" },
+        "53": { color: "white", type: "pawn" },
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
@@ -137,6 +138,7 @@ describe("listPseudoLegalMoves", () => {
     test("先手の香が3段目以降に進む場合、成る手も含める", () => {
       const board = setupBoard({
         "55": { color: "black", type: "lance" },
+        "51": { color: "white", type: "pawn" },
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
