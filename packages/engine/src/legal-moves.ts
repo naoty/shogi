@@ -1,7 +1,7 @@
 import { columnOf, rowOf, squareOf, squares } from "./square";
 import type { Board, Color, Move, Position, Square } from "./types";
 
-export function listPseudoLegalMoves(position: Position): Move[] {
+export function pseudoLegalMoves(position: Position): Move[] {
   const moves: Move[] = [];
 
   for (const square of squares) {
@@ -13,10 +13,10 @@ export function listPseudoLegalMoves(position: Position): Move[] {
 
     switch (piece.type) {
       case "pawn":
-        moves.push(...listPseudoLegalPawnMoves(position.board, square));
+        moves.push(...pseudoLegalPawnMoves(position.board, square));
         break;
       case "lance":
-        moves.push(...listPseudoLegalLanceMoves(position.board, square));
+        moves.push(...pseudoLegalLanceMoves(position.board, square));
         break;
     }
   }
@@ -24,7 +24,7 @@ export function listPseudoLegalMoves(position: Position): Move[] {
   return moves;
 }
 
-function listPseudoLegalPawnMoves(board: Board, square: Square): Move[] {
+function pseudoLegalPawnMoves(board: Board, square: Square): Move[] {
   const moves: Move[] = [];
 
   const piece = board[square];
@@ -44,7 +44,7 @@ function listPseudoLegalPawnMoves(board: Board, square: Square): Move[] {
   return normalMovesOf(board, square, to);
 }
 
-function listPseudoLegalLanceMoves(board: Board, square: Square): Move[] {
+function pseudoLegalLanceMoves(board: Board, square: Square): Move[] {
   const moves: Move[] = [];
 
   const piece = board[square];
