@@ -41,20 +41,7 @@ function listPseudoLegalPawnMoves(board: Board, square: Square): Move[] {
     return moves;
   }
 
-  const toPiece = board[to];
-  if (toPiece !== null && toPiece.color === piece.color) {
-    return moves;
-  }
-
-  if (canMoveWithoutPromotion(piece.color, to)) {
-    moves.push({ type: "normal", from: square, to, promote: false });
-  }
-
-  if (canPromote(piece.color, square, to)) {
-    moves.push({ type: "normal", from: square, to, promote: true });
-  }
-
-  return moves;
+  return normalMovesOf(board, square, to);
 }
 
 function listPseudoLegalLanceMoves(board: Board, square: Square): Move[] {
@@ -70,33 +57,32 @@ function listPseudoLegalLanceMoves(board: Board, square: Square): Move[] {
   const direction = piece.color === "black" ? -1 : 1;
   for (let toRow = fromRow + direction; 1 <= toRow && toRow <= 9; toRow += direction) {
     const to = squareOf(fromColumn, toRow);
-    if (to === null) {
-      break;
-    }
+    if (to === null) break;
 
-    const toPiece = board[to];
+    moves.push(...normalMovesOf(board, square, to));
 
-    if (toPiece !== null && toPiece.color === piece.color) {
-      break;
-    }
+    // 駒があればそれ以上進めない
+    if (board[to] !== null) break;
+  }
 
-    if (toPiece !== null && toPiece.color !== piece.color) {
-      moves.push({ type: "normal", from: square, to, promote: false });
+  return moves;
+}
 
-      if (canPromote(piece.color, square, to)) {
-        moves.push({ type: "normal", from: square, to, promote: true });
-      }
+function normalMovesOf(board: Board, from: Square, to: Square): Move[] {
+  const piece = board[from];
+  if (piece === null) return [];
 
-      break;
-    }
+  const toPiece = board[to];
+  if (toPiece !== null && toPiece.color === piece.color) return [];
 
-    if (canMoveWithoutPromotion(piece.color, to)) {
-      moves.push({ type: "normal", from: square, to, promote: false });
-    }
+  const moves: Move[] = [];
 
-    if (canPromote(piece.color, square, to)) {
-      moves.push({ type: "normal", from: square, to, promote: true });
-    }
+  if (canMoveWithoutPromotion(piece.color, to)) {
+    moves.push({ type: "normal", from, to, promote: false });
+  }
+
+  if (canPromote(piece.color, from, to)) {
+    moves.push({ type: "normal", from, to, promote: true });
   }
 
   return moves;
