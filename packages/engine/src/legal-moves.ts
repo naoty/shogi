@@ -24,6 +24,9 @@ export function pseudoLegalMovesOf(position: Position): Move[] {
       case "silver":
         moves.push(...pseudoLegalSilverMovesOf(position.board, square));
         break;
+      case "gold":
+        moves.push(...pseudoLegalGoldMovesOf(position.board, square));
+        break;
     }
   }
 
@@ -126,6 +129,37 @@ function pseudoLegalSilverMovesOf(board: Board, square: Square): Move[] {
   return moves;
 }
 
+function pseudoLegalGoldMovesOf(board: Board, square: Square): Move[] {
+  const moves: Move[] = [];
+
+  const piece = board[square];
+  if (piece === null || piece.type !== "gold") {
+    return moves;
+  }
+
+  const fromColumn = columnOf(square);
+  const fromRow = rowOf(square);
+  const direction = piece.color === "black" ? -1 : 1;
+  const vectors = [
+    [0, direction],
+    [-1, direction],
+    [1, direction],
+    [-1, 0],
+    [1, 0],
+    [0, -direction],
+  ] as const;
+  for (const vector of vectors) {
+    const toColumn = fromColumn + vector[0];
+    const toRow = fromRow + vector[1];
+    const to = squareOf(toColumn, toRow);
+    if (to === null) continue;
+
+    moves.push(...normalMovesOf(board, square, to));
+  }
+
+  return moves;
+}
+
 function normalMovesOf(board: Board, from: Square, to: Square): Move[] {
   const piece = board[from];
   if (piece === null) return [];
@@ -163,6 +197,13 @@ function canMoveWithoutPromotion(piece: Piece, to: Square): boolean {
 function canPromote(piece: Piece, from: Square, to: Square): boolean {
   const fromRow = rowOf(from);
   const toRow = rowOf(to);
+
+  switch (piece.type) {
+    case "gold":
+      return false;
+    default:
+      break;
+  }
 
   if (piece.color === "black") {
     return fromRow <= 3 || toRow <= 3;
