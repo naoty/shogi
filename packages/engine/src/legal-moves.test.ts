@@ -458,4 +458,98 @@ describe("pseudoLegalMovesOf", () => {
       expect(result).not.toContainEqual({ type: "normal", from: "54", to: "53", promote: true });
     });
   });
+
+  describe("飛を動かす手を返す", () => {
+    test("十字に動かす手を返す", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "rook" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "54", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "53", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "52", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "51", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "56", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "57", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "58", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "59", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "45", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "35", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "25", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "15", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "65", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "75", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "85", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "95", promote: false });
+    });
+
+    test("動かす先に自分の駒がある場合、その駒から先に進む手を返さない", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "rook" },
+        "53": { color: "black", type: "pawn" },
+        "58": { color: "black", type: "king" },
+        "25": { color: "black", type: "knight" },
+        "75": { color: "black", type: "lance" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "53", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "58", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "25", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "75", promote: false });
+    });
+
+    test("動かす先に相手の駒がある場合、その駒より先に進む手を返さない", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "rook" },
+        "53": { color: "white", type: "pawn" },
+        "58": { color: "white", type: "king" },
+        "25": { color: "white", type: "knight" },
+        "75": { color: "white", type: "lance" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "53", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "58", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "25", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "75", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "52", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "51", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "59", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "15", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "85", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "95", promote: false });
+    });
+
+    test("飛が3段目以降に動く場合、成る手も含める", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "rook" },
+        "53": { color: "white", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "53", promote: true });
+    });
+
+    test("飛が3段目以降から動く場合、成る手を含める", () => {
+      const board = setupBoard({
+        "53": { color: "black", type: "rook" },
+        "23": { color: "white", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "53", to: "23", promote: true });
+    });
+  });
 });

@@ -31,6 +31,9 @@ export function pseudoLegalMovesOf(position: Position): Move[] {
       case "king":
         moves.push(...pseudoLegalKingMovesOf(position.board, square));
         break;
+      case "rook":
+        moves.push(...pseudoLegalRookMovesOf(position.board, square));
+        break;
     }
   }
 
@@ -191,6 +194,60 @@ function pseudoLegalKingMovesOf(board: Board, square: Square): Move[] {
     if (to === null) continue;
 
     moves.push(...normalMovesOf(board, square, to));
+  }
+
+  return moves;
+}
+
+function pseudoLegalRookMovesOf(board: Board, square: Square): Move[] {
+  const moves: Move[] = [];
+
+  const piece = board[square];
+  if (piece === null || piece.type !== "rook") {
+    return moves;
+  }
+
+  const fromColumn = columnOf(square);
+  const fromRow = rowOf(square);
+
+  for (let toRow = fromRow + 1; toRow <= 9; toRow++) {
+    const to = squareOf(fromColumn, toRow);
+    if (to === null) break;
+
+    moves.push(...normalMovesOf(board, square, to));
+
+    // 駒があればそれ以上進めない
+    if (board[to] !== null) break;
+  }
+
+  for (let toRow = fromRow - 1; toRow >= 1; toRow--) {
+    const to = squareOf(fromColumn, toRow);
+    if (to === null) break;
+
+    moves.push(...normalMovesOf(board, square, to));
+
+    // 駒があればそれ以上進めない
+    if (board[to] !== null) break;
+  }
+
+  for (let toColumn = fromColumn + 1; toColumn <= 9; toColumn++) {
+    const to = squareOf(toColumn, fromRow);
+    if (to === null) break;
+
+    moves.push(...normalMovesOf(board, square, to));
+
+    // 駒があればそれ以上進めない
+    if (board[to] !== null) break;
+  }
+
+  for (let toColumn = fromColumn - 1; toColumn >= 1; toColumn--) {
+    const to = squareOf(toColumn, fromRow);
+    if (to === null) break;
+
+    moves.push(...normalMovesOf(board, square, to));
+
+    // 駒があればそれ以上進めない
+    if (board[to] !== null) break;
   }
 
   return moves;
