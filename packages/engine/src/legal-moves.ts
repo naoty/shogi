@@ -18,6 +18,9 @@ export function pseudoLegalMoves(position: Position): Move[] {
       case "lance":
         moves.push(...pseudoLegalLanceMoves(position.board, square));
         break;
+      case "knight":
+        moves.push(...pseudoLegalKnightMoves(position.board, square));
+        break;
     }
   }
 
@@ -63,6 +66,28 @@ function pseudoLegalLanceMoves(board: Board, square: Square): Move[] {
 
     // 駒があればそれ以上進めない
     if (board[to] !== null) break;
+  }
+
+  return moves;
+}
+
+function pseudoLegalKnightMoves(board: Board, square: Square): Move[] {
+  const moves: Move[] = [];
+
+  const piece = board[square];
+  if (piece === null || piece.type !== "knight") {
+    return moves;
+  }
+
+  const fromColumn = columnOf(square);
+  const fromRow = rowOf(square);
+  const direction = piece.color === "black" ? -1 : 1;
+  for (const toColumn of [fromColumn - 1, fromColumn + 1]) {
+    const toRow = fromRow + 2 * direction;
+    const to = squareOf(toColumn, toRow);
+    if (to === null) continue;
+
+    moves.push(...normalMovesOf(board, square, to));
   }
 
   return moves;

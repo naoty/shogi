@@ -161,4 +161,82 @@ describe("pseudoLegalMovesOf", () => {
       expect(result).not.toContainEqual({ type: "normal", from: "55", to: "51", promote: false });
     });
   });
+
+  describe("桂を跳ねる手を返す", () => {
+    test("先手の場合、先手の方向に跳ねる手を返す", () => {
+      const board = setupBoard({
+        "77": { color: "black", type: "knight" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMoves(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "77", to: "65", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "77", to: "85", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "77", to: "89", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "77", to: "59", promote: false });
+    });
+
+    test("後手の場合、後手の方向に跳ねる手を返す", () => {
+      const board = setupBoard({
+        "73": { color: "white", type: "knight" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "white" as const };
+      const result = pseudoLegalMoves(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "73", to: "85", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "73", to: "65", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "73", to: "81", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "73", to: "51", promote: false });
+    });
+
+    test("跳ねる先に自分の駒がある場合、手を返さない", () => {
+      const board = setupBoard({
+        "77": { color: "black", type: "knight" },
+        "65": { color: "black", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMoves(position);
+
+      expect(result).not.toContainEqual({ type: "normal", from: "77", to: "65", promote: false });
+    });
+
+    test("跳ねる先に相手の駒がある場合、手を返す", () => {
+      const board = setupBoard({
+        "77": { color: "black", type: "knight" },
+        "65": { color: "white", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMoves(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "77", to: "65", promote: false });
+    });
+
+    test("先手の桂が3段目以降に跳ねる場合、成る手も含める", () => {
+      const board = setupBoard({
+        "65": { color: "black", type: "knight" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMoves(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "65", to: "53", promote: true });
+      expect(result).toContainEqual({ type: "normal", from: "65", to: "73", promote: true });
+    });
+
+    // test("先手の桂が2段目以降に跳ねる場合、不成の手を返してはいけない", () => {
+    //   const board = setupBoard({
+    //     "54": { color: "black", type: "knight" },
+    //   });
+    //   const hands = setupHands();
+    //   const position = { board, hands, turn: "black" as const };
+    //   const result = pseudoLegalMoves(position);
+
+    //   expect(result).not.toContainEqual({ type: "normal", from: "54", to: "42", promote: false });
+    //   expect(result).not.toContainEqual({ type: "normal", from: "54", to: "66", promote: false });
+    // });
+  });
 });
