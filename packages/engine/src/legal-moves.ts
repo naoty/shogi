@@ -34,6 +34,9 @@ export function pseudoLegalMovesOf(position: Position): Move[] {
       case "rook":
         moves.push(...pseudoLegalRookMovesOf(position.board, square));
         break;
+      case "bishop":
+        moves.push(...pseudoLegalBishopMovesOf(position.board, square));
+        break;
     }
   }
 
@@ -202,6 +205,25 @@ function pseudoLegalRookMovesOf(board: Board, square: Square): Move[] {
     [0, -1],
     [1, 0],
     [-1, 0],
+  ] as const;
+  moves.push(...slidingMovesOf(board, square, directions));
+
+  return moves;
+}
+
+function pseudoLegalBishopMovesOf(board: Board, square: Square): Move[] {
+  const moves: Move[] = [];
+
+  const piece = board[square];
+  if (piece === null || piece.type !== "bishop") {
+    return moves;
+  }
+
+  const directions = [
+    [1, 1],
+    [1, -1],
+    [-1, 1],
+    [-1, -1],
   ] as const;
   moves.push(...slidingMovesOf(board, square, directions));
 
