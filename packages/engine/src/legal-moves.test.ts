@@ -35,7 +35,7 @@ describe("pseudoLegalMovesOf", () => {
       const position = { board, hands, turn: "black" as const };
       const result = pseudoLegalMovesOf(position);
 
-      expect(result).toEqual([]);
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "54", promote: false });
     });
 
     test("前に相手の駒がある場合、手を返す", () => {
@@ -237,6 +237,95 @@ describe("pseudoLegalMovesOf", () => {
 
       expect(result).not.toContainEqual({ type: "normal", from: "54", to: "42", promote: false });
       expect(result).not.toContainEqual({ type: "normal", from: "54", to: "62", promote: false });
+    });
+  });
+
+  describe("銀を動かす手を返す", () => {
+    test("先手の場合、先手の方向に動かす手を返す", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "silver" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "54", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "44", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "64", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "46", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "66", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "45", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "65", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "56", promote: false });
+    });
+
+    test("後手の場合、後手の方向に動かす手を返す", () => {
+      const board = setupBoard({
+        "55": { color: "white", type: "silver" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "white" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "56", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "46", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "66", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "44", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "64", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "45", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "65", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "54", promote: false });
+    });
+
+    test("動かす先に自分の駒がある場合、手を返さない", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "silver" },
+        "54": { color: "black", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "54", promote: false });
+    });
+
+    test("動かす先に相手の駒がある場合、手を返す", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "silver" },
+        "54": { color: "white", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "54", promote: false });
+    });
+
+    test("先手の銀が3段目以降に動く場合、成る手も含める", () => {
+      const board = setupBoard({
+        "54": { color: "black", type: "silver" },
+        "53": { color: "white", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "54", to: "53", promote: true });
+      expect(result).toContainEqual({ type: "normal", from: "54", to: "43", promote: true });
+      expect(result).toContainEqual({ type: "normal", from: "54", to: "63", promote: true });
+    });
+
+    test("先手の銀が3段目から4段目に動く場合、成る手を含める", () => {
+      const board = setupBoard({
+        "53": { color: "black", type: "silver" },
+        "44": { color: "white", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "53", to: "44", promote: true });
+      expect(result).toContainEqual({ type: "normal", from: "53", to: "64", promote: true });
     });
   });
 });
