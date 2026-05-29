@@ -68,18 +68,8 @@ function pseudoLegalLanceMovesOf(board: Board, square: Square): Move[] {
     return moves;
   }
 
-  const fromColumn = columnOf(square);
-  const fromRow = rowOf(square);
-  const direction = piece.color === "black" ? -1 : 1;
-  for (let toRow = fromRow + direction; 1 <= toRow && toRow <= 9; toRow += direction) {
-    const to = squareOf(fromColumn, toRow);
-    if (to === null) break;
-
-    moves.push(...normalMovesOf(board, square, to));
-
-    // 駒があればそれ以上進めない
-    if (board[to] !== null) break;
-  }
+  const directions = piece.color === "black" ? [[0, -1] as const] : [[0, 1] as const];
+  moves.push(...slidingMovesOf(board, square, directions));
 
   return moves;
 }
@@ -207,29 +197,13 @@ function pseudoLegalRookMovesOf(board: Board, square: Square): Move[] {
     return moves;
   }
 
-  const fromColumn = columnOf(square);
-  const fromRow = rowOf(square);
-
-  const vectors = [
+  const directions = [
     [0, 1],
     [0, -1],
     [1, 0],
     [-1, 0],
   ] as const;
-
-  for (const [columnDelta, rowDelta] of vectors) {
-    for (let distance = 1; distance <= 8; distance++) {
-      const toColumn = fromColumn + columnDelta * distance;
-      const toRow = fromRow + rowDelta * distance;
-      const to = squareOf(toColumn, toRow);
-      if (to === null) break;
-
-      moves.push(...normalMovesOf(board, square, to));
-
-      // 駒があればそれ以上進めない
-      if (board[to] !== null) break;
-    }
-  }
+  moves.push(...slidingMovesOf(board, square, directions));
 
   return moves;
 }
@@ -249,6 +223,30 @@ function normalMovesOf(board: Board, from: Square, to: Square): Move[] {
 
   if (canPromote(piece, from, to)) {
     moves.push({ type: "normal", from, to, promote: true });
+  }
+
+  return moves;
+}
+
+type Direction = readonly [number, number];
+function slidingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
+  const moves: Move[] = [];
+
+  const fromColumn = columnOf(from);
+  const fromRow = rowOf(from);
+
+  for (const [columnDirection, rowDirection] of directions) {
+    for (let distance = 1; distance <= 8; distance++) {
+      const toColumn = fromColumn + columnDirection * distance;
+      const toRow = fromRow + rowDirection * distance;
+      const to = squareOf(toColumn, toRow);
+      if (to === null) break;
+
+      moves.push(...normalMovesOf(board, from, to));
+
+      // 駒があればそれ以上進めない
+      if (board[to] !== null) break;
+    }
   }
 
   return moves;
