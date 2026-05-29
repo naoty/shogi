@@ -64,17 +64,14 @@ function pseudoLegalPawnMovesOf(board: Board, square: Square): Move[] {
 }
 
 function pseudoLegalLanceMovesOf(board: Board, square: Square): Move[] {
-  const moves: Move[] = [];
-
   const piece = board[square];
   if (piece === null || piece.type !== "lance") {
-    return moves;
+    return [];
   }
 
   const directions = piece.color === "black" ? [[0, -1] as const] : [[0, 1] as const];
-  moves.push(...slidingMovesOf(board, square, directions));
 
-  return moves;
+  return slidingMovesOf(board, square, directions);
 }
 
 function pseudoLegalKnightMovesOf(board: Board, square: Square): Move[] {
@@ -193,11 +190,9 @@ function pseudoLegalKingMovesOf(board: Board, square: Square): Move[] {
 }
 
 function pseudoLegalRookMovesOf(board: Board, square: Square): Move[] {
-  const moves: Move[] = [];
-
   const piece = board[square];
   if (piece === null || piece.type !== "rook") {
-    return moves;
+    return [];
   }
 
   const directions = [
@@ -206,17 +201,14 @@ function pseudoLegalRookMovesOf(board: Board, square: Square): Move[] {
     [1, 0],
     [-1, 0],
   ] as const;
-  moves.push(...slidingMovesOf(board, square, directions));
 
-  return moves;
+  return slidingMovesOf(board, square, directions);
 }
 
 function pseudoLegalBishopMovesOf(board: Board, square: Square): Move[] {
-  const moves: Move[] = [];
-
   const piece = board[square];
   if (piece === null || piece.type !== "bishop") {
-    return moves;
+    return [];
   }
 
   const directions = [
@@ -225,9 +217,8 @@ function pseudoLegalBishopMovesOf(board: Board, square: Square): Move[] {
     [-1, 1],
     [-1, -1],
   ] as const;
-  moves.push(...slidingMovesOf(board, square, directions));
 
-  return moves;
+  return slidingMovesOf(board, square, directions);
 }
 
 function normalMovesOf(board: Board, from: Square, to: Square): Move[] {
