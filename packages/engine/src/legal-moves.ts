@@ -1,3 +1,4 @@
+import { isPromotable } from "./piece";
 import { columnOf, rowOf, squareOf, squares } from "./square";
 import type { Board, Move, Piece, Position, Square } from "./types";
 
@@ -195,15 +196,10 @@ function canMoveWithoutPromotion(piece: Piece, to: Square): boolean {
 }
 
 function canPromote(piece: Piece, from: Square, to: Square): boolean {
+  if (!isPromotable(piece)) return false;
+
   const fromRow = rowOf(from);
   const toRow = rowOf(to);
-
-  switch (piece.type) {
-    case "gold":
-      return false;
-    default:
-      break;
-  }
 
   if (piece.color === "black") {
     return fromRow <= 3 || toRow <= 3;
