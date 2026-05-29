@@ -210,44 +210,25 @@ function pseudoLegalRookMovesOf(board: Board, square: Square): Move[] {
   const fromColumn = columnOf(square);
   const fromRow = rowOf(square);
 
-  for (let toRow = fromRow + 1; toRow <= 9; toRow++) {
-    const to = squareOf(fromColumn, toRow);
-    if (to === null) break;
+  const vectors = [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+  ] as const;
 
-    moves.push(...normalMovesOf(board, square, to));
+  for (const [columnDelta, rowDelta] of vectors) {
+    for (let distance = 1; distance <= 8; distance++) {
+      const toColumn = fromColumn + columnDelta * distance;
+      const toRow = fromRow + rowDelta * distance;
+      const to = squareOf(toColumn, toRow);
+      if (to === null) break;
 
-    // 駒があればそれ以上進めない
-    if (board[to] !== null) break;
-  }
+      moves.push(...normalMovesOf(board, square, to));
 
-  for (let toRow = fromRow - 1; toRow >= 1; toRow--) {
-    const to = squareOf(fromColumn, toRow);
-    if (to === null) break;
-
-    moves.push(...normalMovesOf(board, square, to));
-
-    // 駒があればそれ以上進めない
-    if (board[to] !== null) break;
-  }
-
-  for (let toColumn = fromColumn + 1; toColumn <= 9; toColumn++) {
-    const to = squareOf(toColumn, fromRow);
-    if (to === null) break;
-
-    moves.push(...normalMovesOf(board, square, to));
-
-    // 駒があればそれ以上進めない
-    if (board[to] !== null) break;
-  }
-
-  for (let toColumn = fromColumn - 1; toColumn >= 1; toColumn--) {
-    const to = squareOf(toColumn, fromRow);
-    if (to === null) break;
-
-    moves.push(...normalMovesOf(board, square, to));
-
-    // 駒があればそれ以上進めない
-    if (board[to] !== null) break;
+      // 駒があればそれ以上進めない
+      if (board[to] !== null) break;
+    }
   }
 
   return moves;
