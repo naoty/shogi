@@ -1,7 +1,7 @@
 import { columnOf, rowOf, squareOf, squares } from "./square";
 import type { Board, Move, Piece, Position, Square } from "./types";
 
-export function pseudoLegalMoves(position: Position): Move[] {
+export function pseudoLegalMovesOf(position: Position): Move[] {
   const moves: Move[] = [];
 
   for (const square of squares) {
@@ -13,13 +13,13 @@ export function pseudoLegalMoves(position: Position): Move[] {
 
     switch (piece.type) {
       case "pawn":
-        moves.push(...pseudoLegalPawnMoves(position.board, square));
+        moves.push(...pseudoLegalPawnMovesOf(position.board, square));
         break;
       case "lance":
-        moves.push(...pseudoLegalLanceMoves(position.board, square));
+        moves.push(...pseudoLegalLanceMovesOf(position.board, square));
         break;
       case "knight":
-        moves.push(...pseudoLegalKnightMoves(position.board, square));
+        moves.push(...pseudoLegalKnightMovesOf(position.board, square));
         break;
     }
   }
@@ -27,7 +27,7 @@ export function pseudoLegalMoves(position: Position): Move[] {
   return moves;
 }
 
-function pseudoLegalPawnMoves(board: Board, square: Square): Move[] {
+function pseudoLegalPawnMovesOf(board: Board, square: Square): Move[] {
   const moves: Move[] = [];
 
   const piece = board[square];
@@ -47,7 +47,7 @@ function pseudoLegalPawnMoves(board: Board, square: Square): Move[] {
   return normalMovesOf(board, square, to);
 }
 
-function pseudoLegalLanceMoves(board: Board, square: Square): Move[] {
+function pseudoLegalLanceMovesOf(board: Board, square: Square): Move[] {
   const moves: Move[] = [];
 
   const piece = board[square];
@@ -71,7 +71,7 @@ function pseudoLegalLanceMoves(board: Board, square: Square): Move[] {
   return moves;
 }
 
-function pseudoLegalKnightMoves(board: Board, square: Square): Move[] {
+function pseudoLegalKnightMovesOf(board: Board, square: Square): Move[] {
   const moves: Move[] = [];
 
   const piece = board[square];
