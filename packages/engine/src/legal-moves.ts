@@ -26,6 +26,10 @@ export function pseudoLegalMovesOf(position: Position): Move[] {
         moves.push(...pseudoLegalSilverMovesOf(position.board, square));
         break;
       case "gold":
+      case "pawn+":
+      case "lance+":
+      case "knight+":
+      case "silver+":
         moves.push(...pseudoLegalGoldMovesOf(position.board, square));
         break;
       case "king":
@@ -102,9 +106,7 @@ function pseudoLegalSilverMovesOf(board: Board, square: Square): Move[] {
 
 function pseudoLegalGoldMovesOf(board: Board, square: Square): Move[] {
   const piece = board[square];
-  if (piece === null || piece.type !== "gold") {
-    return [];
-  }
+  if (piece === null) return [];
 
   const forward = piece.color === "black" ? -1 : 1;
   const directions = [

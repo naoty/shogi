@@ -649,4 +649,33 @@ describe("pseudoLegalMovesOf", () => {
       expect(result).toContainEqual({ type: "normal", from: "33", to: "44", promote: true });
     });
   });
+
+  describe("金と同じ動きの成駒を動かす手を返す", () => {
+    const cases = [
+      { type: "pawn+", name: "と" },
+      { type: "lance+", name: "成香" },
+      { type: "knight+", name: "成桂" },
+      { type: "silver+", name: "成銀" },
+    ] as const;
+
+    for (const { type, name } of cases) {
+      test(`${name}を動かす手を返す`, () => {
+        const board = setupBoard({
+          "55": { color: "black", type },
+        });
+        const hands = setupHands();
+        const position = { board, hands, turn: "black" as const };
+        const result = pseudoLegalMovesOf(position);
+
+        expect(result).toContainEqual({ type: "normal", from: "55", to: "54", promote: false });
+        expect(result).toContainEqual({ type: "normal", from: "55", to: "44", promote: false });
+        expect(result).toContainEqual({ type: "normal", from: "55", to: "64", promote: false });
+        expect(result).toContainEqual({ type: "normal", from: "55", to: "45", promote: false });
+        expect(result).toContainEqual({ type: "normal", from: "55", to: "65", promote: false });
+        expect(result).toContainEqual({ type: "normal", from: "55", to: "56", promote: false });
+        expect(result).not.toContainEqual({ type: "normal", from: "55", to: "46", promote: false });
+        expect(result).not.toContainEqual({ type: "normal", from: "55", to: "66", promote: false });
+      });
+    }
+  });
 });
