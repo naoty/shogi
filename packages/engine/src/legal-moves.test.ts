@@ -402,4 +402,60 @@ describe("pseudoLegalMovesOf", () => {
       expect(result).not.toContainEqual({ type: "normal", from: "54", to: "53", promote: true });
     });
   });
+
+  describe("王を動かす手を返す", () => {
+    test("全方向に動かす手を返す", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "king" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "54", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "44", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "64", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "45", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "65", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "56", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "46", promote: false });
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "66", promote: false });
+    });
+
+    test("動かす先に自分の駒がある場合、手を返さない", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "king" },
+        "54": { color: "black", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).not.toContainEqual({ type: "normal", from: "55", to: "54", promote: false });
+    });
+
+    test("動かす先に相手の駒がある場合、手を返す", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "king" },
+        "54": { color: "white", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).toContainEqual({ type: "normal", from: "55", to: "54", promote: false });
+    });
+
+    test("王を成る手を返してはいけない", () => {
+      const board = setupBoard({
+        "54": { color: "black", type: "king" },
+        "53": { color: "white", type: "pawn" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMovesOf(position);
+
+      expect(result).not.toContainEqual({ type: "normal", from: "54", to: "53", promote: true });
+    });
+  });
 });

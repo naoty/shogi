@@ -28,6 +28,9 @@ export function pseudoLegalMovesOf(position: Position): Move[] {
       case "gold":
         moves.push(...pseudoLegalGoldMovesOf(position.board, square));
         break;
+      case "king":
+        moves.push(...pseudoLegalKingMovesOf(position.board, square));
+        break;
     }
   }
 
@@ -148,6 +151,38 @@ function pseudoLegalGoldMovesOf(board: Board, square: Square): Move[] {
     [-1, 0],
     [1, 0],
     [0, -direction],
+  ] as const;
+  for (const vector of vectors) {
+    const toColumn = fromColumn + vector[0];
+    const toRow = fromRow + vector[1];
+    const to = squareOf(toColumn, toRow);
+    if (to === null) continue;
+
+    moves.push(...normalMovesOf(board, square, to));
+  }
+
+  return moves;
+}
+
+function pseudoLegalKingMovesOf(board: Board, square: Square): Move[] {
+  const moves: Move[] = [];
+
+  const piece = board[square];
+  if (piece === null || piece.type !== "king") {
+    return moves;
+  }
+
+  const fromColumn = columnOf(square);
+  const fromRow = rowOf(square);
+  const vectors = [
+    [0, 1],
+    [1, 1],
+    [1, 0],
+    [1, -1],
+    [0, -1],
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
   ] as const;
   for (const vector of vectors) {
     const toColumn = fromColumn + vector[0];
