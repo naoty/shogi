@@ -227,16 +227,16 @@ describe("pseudoLegalMovesOf", () => {
       expect(result).toContainEqual({ type: "normal", from: "65", to: "73", promote: true });
     });
 
-    // test("先手の桂が2段目以降に跳ねる場合、不成の手を返してはいけない", () => {
-    //   const board = setupBoard({
-    //     "54": { color: "black", type: "knight" },
-    //   });
-    //   const hands = setupHands();
-    //   const position = { board, hands, turn: "black" as const };
-    //   const result = pseudoLegalMoves(position);
+    test("先手の桂が2段目以降に跳ねる場合、不成の手を返してはいけない", () => {
+      const board = setupBoard({
+        "54": { color: "black", type: "knight" },
+      });
+      const hands = setupHands();
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalMoves(position);
 
-    //   expect(result).not.toContainEqual({ type: "normal", from: "54", to: "42", promote: false });
-    //   expect(result).not.toContainEqual({ type: "normal", from: "54", to: "66", promote: false });
-    // });
+      expect(result).not.toContainEqual({ type: "normal", from: "54", to: "42", promote: false });
+      expect(result).not.toContainEqual({ type: "normal", from: "54", to: "62", promote: false });
+    });
   });
 });

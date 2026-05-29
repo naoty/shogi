@@ -1,5 +1,5 @@
 import { columnOf, rowOf, squareOf, squares } from "./square";
-import type { Board, Color, Move, Position, Square } from "./types";
+import type { Board, Move, Piece, Position, Square } from "./types";
 
 export function pseudoLegalMoves(position: Position): Move[] {
   const moves: Move[] = [];
@@ -102,32 +102,36 @@ function normalMovesOf(board: Board, from: Square, to: Square): Move[] {
 
   const moves: Move[] = [];
 
-  if (canMoveWithoutPromotion(piece.color, to)) {
+  if (canMoveWithoutPromotion(piece, to)) {
     moves.push({ type: "normal", from, to, promote: false });
   }
 
-  if (canPromote(piece.color, from, to)) {
+  if (canPromote(piece, from, to)) {
     moves.push({ type: "normal", from, to, promote: true });
   }
 
   return moves;
 }
 
-function canMoveWithoutPromotion(color: Color, to: Square): boolean {
+function canMoveWithoutPromotion(piece: Piece, to: Square): boolean {
   const toRow = rowOf(to);
 
-  if (color === "black") {
-    return toRow > 1;
-  } else {
-    return toRow < 9;
+  switch (piece.type) {
+    case "pawn":
+    case "lance":
+      return piece.color === "black" ? toRow > 1 : toRow < 9;
+    case "knight":
+      return piece.color === "black" ? toRow > 2 : toRow < 8;
+    default:
+      return true;
   }
 }
 
-function canPromote(color: Color, from: Square, to: Square): boolean {
+function canPromote(piece: Piece, from: Square, to: Square): boolean {
   const fromRow = rowOf(from);
   const toRow = rowOf(to);
 
-  if (color === "black") {
+  if (piece.color === "black") {
     return fromRow <= 3 || toRow <= 3;
   } else {
     return fromRow >= 7 || toRow >= 7;
