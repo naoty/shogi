@@ -44,23 +44,15 @@ export function pseudoLegalMovesOf(position: Position): Move[] {
 }
 
 function pseudoLegalPawnMovesOf(board: Board, square: Square): Move[] {
-  const moves: Move[] = [];
-
   const piece = board[square];
   if (piece === null || piece.type !== "pawn") {
-    return moves;
+    return [];
   }
 
-  const fromColumn = columnOf(square);
-  const fromRow = rowOf(square);
+  const forward = piece.color === "black" ? -1 : 1;
+  const directions = [[0, forward]] as const;
 
-  const toRow = piece.color === "black" ? fromRow - 1 : fromRow + 1;
-  const to = squareOf(fromColumn, toRow);
-  if (to === null) {
-    return moves;
-  }
-
-  return normalMovesOf(board, square, to);
+  return stepMovesOf(board, square, directions);
 }
 
 function pseudoLegalLanceMovesOf(board: Board, square: Square): Move[] {
@@ -69,105 +61,71 @@ function pseudoLegalLanceMovesOf(board: Board, square: Square): Move[] {
     return [];
   }
 
-  const directions = piece.color === "black" ? [[0, -1] as const] : [[0, 1] as const];
+  const forward = piece.color === "black" ? -1 : 1;
+  const directions = [[0, forward]] as const;
 
   return slidingMovesOf(board, square, directions);
 }
 
 function pseudoLegalKnightMovesOf(board: Board, square: Square): Move[] {
-  const moves: Move[] = [];
-
   const piece = board[square];
   if (piece === null || piece.type !== "knight") {
-    return moves;
+    return [];
   }
 
-  const fromColumn = columnOf(square);
-  const fromRow = rowOf(square);
-  const direction = piece.color === "black" ? -1 : 1;
-  for (const toColumn of [fromColumn - 1, fromColumn + 1]) {
-    const toRow = fromRow + 2 * direction;
-    const to = squareOf(toColumn, toRow);
-    if (to === null) continue;
+  const forward = piece.color === "black" ? -2 : 2;
+  const directions = [
+    [-1, forward],
+    [1, forward],
+  ] as const;
 
-    moves.push(...normalMovesOf(board, square, to));
-  }
-
-  return moves;
+  return stepMovesOf(board, square, directions);
 }
 
 function pseudoLegalSilverMovesOf(board: Board, square: Square): Move[] {
-  const moves: Move[] = [];
-
   const piece = board[square];
   if (piece === null || piece.type !== "silver") {
-    return moves;
+    return [];
   }
 
-  const fromColumn = columnOf(square);
-  const fromRow = rowOf(square);
-  const direction = piece.color === "black" ? -1 : 1;
-  const vectors = [
-    [0, direction],
-    [-1, direction],
-    [1, direction],
-    [-1, -direction],
-    [1, -direction],
+  const forward = piece.color === "black" ? -1 : 1;
+  const directions = [
+    [0, forward],
+    [-1, forward],
+    [1, forward],
+    [-1, -forward],
+    [1, -forward],
   ] as const;
-  for (const vector of vectors) {
-    const toColumn = fromColumn + vector[0];
-    const toRow = fromRow + vector[1];
-    const to = squareOf(toColumn, toRow);
-    if (to === null) continue;
 
-    moves.push(...normalMovesOf(board, square, to));
-  }
-
-  return moves;
+  return stepMovesOf(board, square, directions);
 }
 
 function pseudoLegalGoldMovesOf(board: Board, square: Square): Move[] {
-  const moves: Move[] = [];
-
   const piece = board[square];
   if (piece === null || piece.type !== "gold") {
-    return moves;
+    return [];
   }
 
-  const fromColumn = columnOf(square);
-  const fromRow = rowOf(square);
-  const direction = piece.color === "black" ? -1 : 1;
-  const vectors = [
-    [0, direction],
-    [-1, direction],
-    [1, direction],
+  const forward = piece.color === "black" ? -1 : 1;
+  const directions = [
+    [0, forward],
+    [-1, forward],
+    [1, forward],
     [-1, 0],
     [1, 0],
-    [0, -direction],
+    [0, -forward],
   ] as const;
-  for (const vector of vectors) {
-    const toColumn = fromColumn + vector[0];
-    const toRow = fromRow + vector[1];
-    const to = squareOf(toColumn, toRow);
-    if (to === null) continue;
 
-    moves.push(...normalMovesOf(board, square, to));
-  }
-
-  return moves;
+  return stepMovesOf(board, square, directions);
 }
 
 function pseudoLegalKingMovesOf(board: Board, square: Square): Move[] {
-  const moves: Move[] = [];
-
   const piece = board[square];
   if (piece === null || piece.type !== "king") {
-    return moves;
+    return [];
   }
 
-  const fromColumn = columnOf(square);
-  const fromRow = rowOf(square);
-  const vectors = [
+  const directions = [
     [0, 1],
     [1, 1],
     [1, 0],
@@ -177,16 +135,8 @@ function pseudoLegalKingMovesOf(board: Board, square: Square): Move[] {
     [-1, 0],
     [-1, 1],
   ] as const;
-  for (const vector of vectors) {
-    const toColumn = fromColumn + vector[0];
-    const toRow = fromRow + vector[1];
-    const to = squareOf(toColumn, toRow);
-    if (to === null) continue;
 
-    moves.push(...normalMovesOf(board, square, to));
-  }
-
-  return moves;
+  return stepMovesOf(board, square, directions);
 }
 
 function pseudoLegalRookMovesOf(board: Board, square: Square): Move[] {
@@ -242,6 +192,25 @@ function normalMovesOf(board: Board, from: Square, to: Square): Move[] {
 }
 
 type Direction = readonly [number, number];
+
+function stepMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
+  const moves: Move[] = [];
+
+  const fromColumn = columnOf(from);
+  const fromRow = rowOf(from);
+
+  for (const [columnDirection, rowDirection] of directions) {
+    const toColumn = fromColumn + columnDirection;
+    const toRow = fromRow + rowDirection;
+    const to = squareOf(toColumn, toRow);
+    if (to === null) continue;
+
+    moves.push(...normalMovesOf(board, from, to));
+  }
+
+  return moves;
+}
+
 function slidingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
   const moves: Move[] = [];
 
@@ -249,9 +218,9 @@ function slidingMovesOf(board: Board, from: Square, directions: readonly Directi
   const fromRow = rowOf(from);
 
   for (const [columnDirection, rowDirection] of directions) {
-    for (let distance = 1; distance <= 8; distance++) {
-      const toColumn = fromColumn + columnDirection * distance;
-      const toRow = fromRow + rowDirection * distance;
+    for (let forward = 1; forward <= 8; forward++) {
+      const toColumn = fromColumn + columnDirection * forward;
+      const toRow = fromRow + rowDirection * forward;
       const to = squareOf(toColumn, toRow);
       if (to === null) break;
 
