@@ -135,9 +135,9 @@ function slidingMovesOf(board: Board, from: Square, directions: readonly Directi
   const fromRow = rowOf(from);
 
   for (const [columnDirection, rowDirection] of directions) {
-    for (let forward = 1; forward <= 8; forward++) {
-      const toColumn = fromColumn + columnDirection * forward;
-      const toRow = fromRow + rowDirection * forward;
+    for (let distance = 1; distance <= 8; distance++) {
+      const toColumn = fromColumn + columnDirection * distance;
+      const toRow = fromRow + rowDirection * distance;
       const to = squareOf(toColumn, toRow);
       if (to === null) break;
 
