@@ -127,80 +127,57 @@ function pseudoLegalGoldMovesOf(board: Board, square: Square): Move[] {
   return stepMovesOf(board, square, directions);
 }
 
+const ROOK_DIRECTIONS = [
+  [0, 1],
+  [0, -1],
+  [1, 0],
+  [-1, 0],
+] as const;
+
+const BISHOP_DIRECTIONS = [
+  [1, 1],
+  [1, -1],
+  [-1, 1],
+  [-1, -1],
+] as const;
+
+const KING_DIRECTIONS = [...ROOK_DIRECTIONS, ...BISHOP_DIRECTIONS] as const;
+
 function pseudoLegalKingMovesOf(board: Board, square: Square): Move[] {
   const piece = board[square];
   if (piece === null || piece.type !== "king") {
     return [];
   }
 
-  const directions = [
-    [0, 1],
-    [1, 1],
-    [1, 0],
-    [1, -1],
-    [0, -1],
-    [-1, -1],
-    [-1, 0],
-    [-1, 1],
-  ] as const;
-
-  return stepMovesOf(board, square, directions);
+  return stepMovesOf(board, square, KING_DIRECTIONS);
 }
 
 function pseudoLegalRookMovesOf(board: Board, square: Square): Move[] {
   const piece = board[square];
   if (piece === null) return [];
 
-  const directions = [
-    [0, 1],
-    [0, -1],
-    [1, 0],
-    [-1, 0],
-  ] as const;
-
-  return slidingMovesOf(board, square, directions);
+  return slidingMovesOf(board, square, ROOK_DIRECTIONS);
 }
 
 function pseudoLegalPromotedRookMovesOf(board: Board, square: Square): Move[] {
   const piece = board[square];
   if (piece === null) return [];
 
-  const directions = [
-    [1, 1],
-    [1, -1],
-    [-1, 1],
-    [-1, -1],
-  ] as const;
-
-  return [...stepMovesOf(board, square, directions), ...pseudoLegalRookMovesOf(board, square)];
+  return [...stepMovesOf(board, square, BISHOP_DIRECTIONS), ...pseudoLegalRookMovesOf(board, square)];
 }
 
 function pseudoLegalBishopMovesOf(board: Board, square: Square): Move[] {
   const piece = board[square];
   if (piece === null) return [];
 
-  const directions = [
-    [1, 1],
-    [1, -1],
-    [-1, 1],
-    [-1, -1],
-  ] as const;
-
-  return slidingMovesOf(board, square, directions);
+  return slidingMovesOf(board, square, BISHOP_DIRECTIONS);
 }
 
 function pseudoLegalPromotedBishopMovesOf(board: Board, square: Square): Move[] {
   const piece = board[square];
   if (piece === null) return [];
 
-  const directions = [
-    [0, 1],
-    [1, 0],
-    [0, -1],
-    [-1, 0],
-  ] as const;
-
-  return [...stepMovesOf(board, square, directions), ...pseudoLegalBishopMovesOf(board, square)];
+  return [...stepMovesOf(board, square, ROOK_DIRECTIONS), ...pseudoLegalBishopMovesOf(board, square)];
 }
 
 function normalMovesOf(board: Board, from: Square, to: Square): Move[] {
