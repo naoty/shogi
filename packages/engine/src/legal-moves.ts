@@ -13,118 +13,83 @@ export function pseudoLegalMovesOf(position: Position): Move[] {
     }
 
     switch (piece.type) {
-      case "pawn":
-        moves.push(...pseudoLegalPawnMovesOf(position.board, square));
+      case "pawn": {
+        const forward = piece.color === "black" ? -1 : 1;
+        moves.push(...stepMovesOf(position.board, square, [[0, forward]]));
         break;
-      case "lance":
-        moves.push(...pseudoLegalLanceMovesOf(position.board, square));
+      }
+      case "lance": {
+        const forward = piece.color === "black" ? -1 : 1;
+        moves.push(...slidingMovesOf(position.board, square, [[0, forward]]));
         break;
-      case "knight":
-        moves.push(...pseudoLegalKnightMovesOf(position.board, square));
+      }
+      case "knight": {
+        const forward = piece.color === "black" ? -2 : 2;
+        moves.push(
+          ...stepMovesOf(position.board, square, [
+            [-1, forward],
+            [1, forward],
+          ]),
+        );
         break;
-      case "silver":
-        moves.push(...pseudoLegalSilverMovesOf(position.board, square));
+      }
+      case "silver": {
+        const forward = piece.color === "black" ? -1 : 1;
+        moves.push(
+          ...stepMovesOf(position.board, square, [
+            [0, forward],
+            [-1, forward],
+            [1, forward],
+            [-1, -forward],
+            [1, -forward],
+          ]),
+        );
         break;
+      }
       case "gold":
       case "pawn+":
       case "lance+":
       case "knight+":
-      case "silver+":
-        moves.push(...pseudoLegalGoldMovesOf(position.board, square));
+      case "silver+": {
+        const forward = piece.color === "black" ? -1 : 1;
+        moves.push(
+          ...stepMovesOf(position.board, square, [
+            [0, forward],
+            [-1, forward],
+            [1, forward],
+            [-1, 0],
+            [1, 0],
+            [0, -forward],
+          ]),
+        );
         break;
-      case "king":
-        moves.push(...pseudoLegalKingMovesOf(position.board, square));
+      }
+      case "king": {
+        moves.push(...stepMovesOf(position.board, square, KING_DIRECTIONS));
         break;
-      case "rook":
-        moves.push(...pseudoLegalRookMovesOf(position.board, square));
+      }
+      case "rook": {
+        moves.push(...slidingMovesOf(position.board, square, ROOK_DIRECTIONS));
         break;
-      case "rook+":
-        moves.push(...pseudoLegalPromotedRookMovesOf(position.board, square));
+      }
+      case "rook+": {
+        moves.push(...stepMovesOf(position.board, square, BISHOP_DIRECTIONS));
+        moves.push(...slidingMovesOf(position.board, square, ROOK_DIRECTIONS));
         break;
-      case "bishop":
-        moves.push(...pseudoLegalBishopMovesOf(position.board, square));
+      }
+      case "bishop": {
+        moves.push(...slidingMovesOf(position.board, square, BISHOP_DIRECTIONS));
         break;
-      case "bishop+":
-        moves.push(...pseudoLegalPromotedBishopMovesOf(position.board, square));
+      }
+      case "bishop+": {
+        moves.push(...stepMovesOf(position.board, square, ROOK_DIRECTIONS));
+        moves.push(...slidingMovesOf(position.board, square, BISHOP_DIRECTIONS));
         break;
+      }
     }
   }
 
   return moves;
-}
-
-function pseudoLegalPawnMovesOf(board: Board, square: Square): Move[] {
-  const piece = board[square];
-  if (piece === null || piece.type !== "pawn") {
-    return [];
-  }
-
-  const forward = piece.color === "black" ? -1 : 1;
-  const directions = [[0, forward]] as const;
-
-  return stepMovesOf(board, square, directions);
-}
-
-function pseudoLegalLanceMovesOf(board: Board, square: Square): Move[] {
-  const piece = board[square];
-  if (piece === null || piece.type !== "lance") {
-    return [];
-  }
-
-  const forward = piece.color === "black" ? -1 : 1;
-  const directions = [[0, forward]] as const;
-
-  return slidingMovesOf(board, square, directions);
-}
-
-function pseudoLegalKnightMovesOf(board: Board, square: Square): Move[] {
-  const piece = board[square];
-  if (piece === null || piece.type !== "knight") {
-    return [];
-  }
-
-  const forward = piece.color === "black" ? -2 : 2;
-  const directions = [
-    [-1, forward],
-    [1, forward],
-  ] as const;
-
-  return stepMovesOf(board, square, directions);
-}
-
-function pseudoLegalSilverMovesOf(board: Board, square: Square): Move[] {
-  const piece = board[square];
-  if (piece === null || piece.type !== "silver") {
-    return [];
-  }
-
-  const forward = piece.color === "black" ? -1 : 1;
-  const directions = [
-    [0, forward],
-    [-1, forward],
-    [1, forward],
-    [-1, -forward],
-    [1, -forward],
-  ] as const;
-
-  return stepMovesOf(board, square, directions);
-}
-
-function pseudoLegalGoldMovesOf(board: Board, square: Square): Move[] {
-  const piece = board[square];
-  if (piece === null) return [];
-
-  const forward = piece.color === "black" ? -1 : 1;
-  const directions = [
-    [0, forward],
-    [-1, forward],
-    [1, forward],
-    [-1, 0],
-    [1, 0],
-    [0, -forward],
-  ] as const;
-
-  return stepMovesOf(board, square, directions);
 }
 
 const ROOK_DIRECTIONS = [
@@ -142,63 +107,6 @@ const BISHOP_DIRECTIONS = [
 ] as const;
 
 const KING_DIRECTIONS = [...ROOK_DIRECTIONS, ...BISHOP_DIRECTIONS] as const;
-
-function pseudoLegalKingMovesOf(board: Board, square: Square): Move[] {
-  const piece = board[square];
-  if (piece === null || piece.type !== "king") {
-    return [];
-  }
-
-  return stepMovesOf(board, square, KING_DIRECTIONS);
-}
-
-function pseudoLegalRookMovesOf(board: Board, square: Square): Move[] {
-  const piece = board[square];
-  if (piece === null) return [];
-
-  return slidingMovesOf(board, square, ROOK_DIRECTIONS);
-}
-
-function pseudoLegalPromotedRookMovesOf(board: Board, square: Square): Move[] {
-  const piece = board[square];
-  if (piece === null) return [];
-
-  return [...stepMovesOf(board, square, BISHOP_DIRECTIONS), ...pseudoLegalRookMovesOf(board, square)];
-}
-
-function pseudoLegalBishopMovesOf(board: Board, square: Square): Move[] {
-  const piece = board[square];
-  if (piece === null) return [];
-
-  return slidingMovesOf(board, square, BISHOP_DIRECTIONS);
-}
-
-function pseudoLegalPromotedBishopMovesOf(board: Board, square: Square): Move[] {
-  const piece = board[square];
-  if (piece === null) return [];
-
-  return [...stepMovesOf(board, square, ROOK_DIRECTIONS), ...pseudoLegalBishopMovesOf(board, square)];
-}
-
-function normalMovesOf(board: Board, from: Square, to: Square): Move[] {
-  const piece = board[from];
-  if (piece === null) return [];
-
-  const toPiece = board[to];
-  if (toPiece !== null && toPiece.color === piece.color) return [];
-
-  const moves: Move[] = [];
-
-  if (canMoveWithoutPromotion(piece, to)) {
-    moves.push({ type: "normal", from, to, promote: false });
-  }
-
-  if (canPromote(piece, from, to)) {
-    moves.push({ type: "normal", from, to, promote: true });
-  }
-
-  return moves;
-}
 
 type Direction = readonly [number, number];
 
@@ -238,6 +146,26 @@ function slidingMovesOf(board: Board, from: Square, directions: readonly Directi
       // 駒があればそれ以上進めない
       if (board[to] !== null) break;
     }
+  }
+
+  return moves;
+}
+
+function normalMovesOf(board: Board, from: Square, to: Square): Move[] {
+  const piece = board[from];
+  if (piece === null) return [];
+
+  const toPiece = board[to];
+  if (toPiece !== null && toPiece.color === piece.color) return [];
+
+  const moves: Move[] = [];
+
+  if (canMoveWithoutPromotion(piece, to)) {
+    moves.push({ type: "normal", from, to, promote: false });
+  }
+
+  if (canPromote(piece, from, to)) {
+    moves.push({ type: "normal", from, to, promote: true });
   }
 
   return moves;
