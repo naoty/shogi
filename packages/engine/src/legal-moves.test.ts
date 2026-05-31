@@ -875,5 +875,24 @@ describe("pseudoLegalMovesOf", () => {
       expect(result).not.toContainEqual({ type: "drop", piece: "knight", to: "51" });
       expect(result).not.toContainEqual({ type: "drop", piece: "knight", to: "52" });
     });
+
+    test("二歩となる手を返してはいけない", () => {
+      const board = setupBoard({
+        "55": { color: "black", type: "pawn" },
+      });
+      const hands = setupHands({ pawn: 1 });
+      const position = { board, hands, turn: "black" as const };
+      const result = pseudoLegalPlaysOf(position);
+
+      expect(result).toContainEqual({ type: "drop", piece: "pawn", to: "45" });
+      expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "51" });
+      expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "52" });
+      expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "53" });
+      expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "54" });
+      expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "56" });
+      expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "57" });
+      expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "58" });
+      expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "59" });
+    });
   });
 });

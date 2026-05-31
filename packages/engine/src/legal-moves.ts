@@ -1,6 +1,6 @@
 import { droppablePieceTypes, isPromotable } from "./piece";
 import { columnOf, rowOf, squareOf, squares } from "./square";
-import type { Board, Color, Drop, Hand, Move, Piece, Play, Position, Square } from "./types";
+import type { Board, Color, Drop, Move, Piece, Play, Position, Square } from "./types";
 
 export function pseudoLegalPlaysOf(position: Position): Play[] {
   const plays: Play[] = [];
@@ -9,8 +9,7 @@ export function pseudoLegalPlaysOf(position: Position): Play[] {
     const piece = position.board[square];
 
     if (piece === null) {
-      const hand = position.hands[position.turn];
-      plays.push(...dropsOf(hand, position.turn, square));
+      plays.push(...dropsOf(position, square));
       continue;
     }
 
@@ -175,14 +174,21 @@ function movesOf(board: Board, from: Square, to: Square): Move[] {
   return moves;
 }
 
-function dropsOf(hand: Hand, color: Color, to: Square): Drop[] {
+function dropsOf(position: Position, to: Square): Drop[] {
   const drops: Drop[] = [];
+  const hand = position.hands[position.turn];
 
   for (const pieceType of droppablePieceTypes) {
-    const droppedPiece = { color, type: pieceType } as Piece;
-    if (hand[pieceType] > 0 && canMoveWithoutPromotion(droppedPiece, to)) {
-      drops.push({ type: "drop", piece: pieceType, to });
+    const droppedPiece = { color: position.turn, type: pieceType } as Piece;
+
+    if (hand[pieceType] === 0) continue;
+    if (!canMoveWithoutPromotion(droppedPiece, to)) continue;
+
+    if (pieceType === "pawn" && hasUnpromotedPawnInColumn(position.board, position.turn, columnOf(to))) {
+      continue;
     }
+
+    drops.push({ type: "drop", piece: pieceType, to });
   }
 
   return drops;
@@ -213,4 +219,11 @@ function canPromote(piece: Piece, from: Square, to: Square): boolean {
   } else {
     return fromRow >= 7 || toRow >= 7;
   }
+}
+
+function hasUnpromotedPawnInColumn(board: Board, color: Color, column: number): boolean {
+  return squares.some((square) => {
+    const piece = board[square];
+    return columnOf(square) === column && piece !== null && piece.color === color && piece.type === "pawn";
+  });
 }
