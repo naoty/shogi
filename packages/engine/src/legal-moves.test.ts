@@ -1,8 +1,9 @@
 import { describe, expect, test } from "vitest";
+import { initialBoard } from "./board";
 import { pseudoLegalPlaysOf } from "./legal-moves";
 import { setupBoard, setupHands } from "./test-data";
 
-describe("pseudoLegalMovesOf", () => {
+describe("pseudoLegalPlaysOf", () => {
   describe("盤上の駒を動かす手を返す", () => {
     describe("歩を進める手を返す", () => {
       test("先手の場合、先手の方向に進める手を返す", () => {
@@ -893,6 +894,53 @@ describe("pseudoLegalMovesOf", () => {
       expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "57" });
       expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "58" });
       expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "59" });
+    });
+  });
+
+  describe("スモークテスト", () => {
+    test("初期局面で指すことができる手を返す", () => {
+      const hands = setupHands();
+      const position = { board: initialBoard, hands, turn: "black" as const };
+      const result = pseudoLegalPlaysOf(position);
+
+      // 歩
+      expect(result).toContainEqual({ type: "move", from: "17", to: "16", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "27", to: "26", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "37", to: "36", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "47", to: "46", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "57", to: "56", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "67", to: "66", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "77", to: "76", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "87", to: "86", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "97", to: "96", promote: false });
+      // 香
+      expect(result).toContainEqual({ type: "move", from: "19", to: "18", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "99", to: "98", promote: false });
+      // 銀
+      expect(result).toContainEqual({ type: "move", from: "39", to: "38", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "39", to: "48", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "79", to: "78", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "79", to: "68", promote: false });
+      // 金
+      expect(result).toContainEqual({ type: "move", from: "49", to: "38", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "49", to: "48", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "49", to: "58", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "69", to: "78", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "69", to: "68", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "69", to: "58", promote: false });
+      // 飛
+      expect(result).toContainEqual({ type: "move", from: "28", to: "18", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "28", to: "38", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "28", to: "48", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "28", to: "58", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "28", to: "68", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "28", to: "78", promote: false });
+      // 王
+      expect(result).toContainEqual({ type: "move", from: "59", to: "48", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "59", to: "58", promote: false });
+      expect(result).toContainEqual({ type: "move", from: "59", to: "68", promote: false });
+
+      expect(result).toHaveLength(30);
     });
   });
 });
