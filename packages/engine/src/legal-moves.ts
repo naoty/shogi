@@ -1,6 +1,6 @@
-import { isPromotable } from "./piece";
+import { droppablePieceTypes, isPromotable } from "./piece";
 import { columnOf, rowOf, squareOf, squares } from "./square";
-import type { Board, Move, Piece, Play, Position, Square } from "./types";
+import type { Board, Color, Drop, Hand, Move, Piece, Play, Position, Square } from "./types";
 
 export function pseudoLegalPlaysOf(position: Position): Play[] {
   const plays: Play[] = [];
@@ -8,9 +8,13 @@ export function pseudoLegalPlaysOf(position: Position): Play[] {
   for (const square of squares) {
     const piece = position.board[square];
 
-    if (piece === null || piece.color !== position.turn) {
+    if (piece === null) {
+      const hand = position.hands[position.turn];
+      plays.push(...dropsOf(hand, position.turn, square));
       continue;
     }
+
+    if (piece.color !== position.turn) continue;
 
     switch (piece.type) {
       case "pawn": {
@@ -169,6 +173,19 @@ function movesOf(board: Board, from: Square, to: Square): Move[] {
   }
 
   return moves;
+}
+
+function dropsOf(hand: Hand, color: Color, to: Square): Drop[] {
+  const drops: Drop[] = [];
+
+  for (const pieceType of droppablePieceTypes) {
+    const droppedPiece = { color, type: pieceType } as Piece;
+    if (hand[pieceType] > 0 && canMoveWithoutPromotion(droppedPiece, to)) {
+      drops.push({ type: "drop", piece: pieceType, to });
+    }
+  }
+
+  return drops;
 }
 
 function canMoveWithoutPromotion(piece: Piece, to: Square): boolean {
