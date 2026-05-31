@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { pseudoLegalMovesOf } from "./legal-moves";
+import { pseudoLegalPlaysOf } from "./legal-moves";
 import { setupBoard, setupHands } from "./test-data";
 
 describe("pseudoLegalMovesOf", () => {
@@ -10,7 +10,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toEqual([{ type: "move", from: "55", to: "54", promote: false }]);
     });
@@ -21,7 +21,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "white" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toEqual([{ type: "move", from: "55", to: "56", promote: false }]);
     });
@@ -33,7 +33,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "54", promote: false });
     });
@@ -45,7 +45,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toEqual([{ type: "move", from: "55", to: "54", promote: false }]);
     });
@@ -57,7 +57,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toEqual([
         { type: "move", from: "54", to: "53", promote: false },
@@ -71,7 +71,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toEqual([{ type: "move", from: "52", to: "51", promote: true }]);
     });
@@ -84,7 +84,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "53", promote: false });
@@ -98,7 +98,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "white" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "56", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "57", promote: false });
@@ -113,7 +113,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "59", to: "58", promote: false });
       expect(result).toContainEqual({ type: "move", from: "59", to: "57", promote: false });
@@ -128,7 +128,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "53", promote: false });
@@ -142,7 +142,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "53", promote: true });
       expect(result).toContainEqual({ type: "move", from: "55", to: "52", promote: true });
@@ -155,7 +155,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "51", promote: true });
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "51", promote: false });
@@ -169,7 +169,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "77", to: "65", promote: false });
       expect(result).toContainEqual({ type: "move", from: "77", to: "85", promote: false });
@@ -183,7 +183,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "white" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "73", to: "85", promote: false });
       expect(result).toContainEqual({ type: "move", from: "73", to: "65", promote: false });
@@ -198,7 +198,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).not.toContainEqual({ type: "move", from: "77", to: "65", promote: false });
     });
@@ -210,7 +210,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "77", to: "65", promote: false });
     });
@@ -221,7 +221,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "65", to: "53", promote: true });
       expect(result).toContainEqual({ type: "move", from: "65", to: "73", promote: true });
@@ -233,7 +233,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).not.toContainEqual({ type: "move", from: "54", to: "42", promote: false });
       expect(result).not.toContainEqual({ type: "move", from: "54", to: "62", promote: false });
@@ -247,7 +247,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "44", promote: false });
@@ -265,7 +265,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "white" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "56", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "46", promote: false });
@@ -284,7 +284,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "54", promote: false });
     });
@@ -296,7 +296,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
     });
@@ -308,7 +308,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "54", to: "53", promote: true });
       expect(result).toContainEqual({ type: "move", from: "54", to: "43", promote: true });
@@ -322,7 +322,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "53", to: "44", promote: true });
       expect(result).toContainEqual({ type: "move", from: "53", to: "64", promote: true });
@@ -336,7 +336,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "44", promote: false });
@@ -354,7 +354,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "white" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "56", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "46", promote: false });
@@ -373,7 +373,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "54", promote: false });
     });
@@ -385,7 +385,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
     });
@@ -397,7 +397,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).not.toContainEqual({ type: "move", from: "54", to: "53", promote: true });
     });
@@ -410,7 +410,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "44", promote: false });
@@ -429,7 +429,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "54", promote: false });
     });
@@ -441,7 +441,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
     });
@@ -453,7 +453,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).not.toContainEqual({ type: "move", from: "54", to: "53", promote: true });
     });
@@ -466,7 +466,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "53", promote: false });
@@ -496,7 +496,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "53", promote: false });
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "58", promote: false });
@@ -514,7 +514,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "53", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "58", promote: false });
@@ -535,7 +535,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "53", promote: true });
     });
@@ -547,7 +547,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "53", to: "23", promote: true });
     });
@@ -560,7 +560,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "44", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "33", promote: false });
@@ -590,7 +590,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "33", promote: false });
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "66", promote: false });
@@ -608,7 +608,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "33", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "66", promote: false });
@@ -632,7 +632,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "33", promote: true });
     });
@@ -644,7 +644,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "33", to: "44", promote: true });
     });
@@ -665,7 +665,7 @@ describe("pseudoLegalMovesOf", () => {
         });
         const hands = setupHands();
         const position = { board, hands, turn: "black" as const };
-        const result = pseudoLegalMovesOf(position);
+        const result = pseudoLegalPlaysOf(position);
 
         expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
         expect(result).toContainEqual({ type: "move", from: "55", to: "44", promote: false });
@@ -686,7 +686,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "44", promote: false });
@@ -723,7 +723,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "53", promote: false });
@@ -742,7 +742,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "53", promote: false });
@@ -770,7 +770,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "44", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "33", promote: false });
@@ -802,7 +802,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "44", promote: false });
       expect(result).not.toContainEqual({ type: "move", from: "55", to: "33", promote: false });
@@ -819,7 +819,7 @@ describe("pseudoLegalMovesOf", () => {
       });
       const hands = setupHands();
       const position = { board, hands, turn: "black" as const };
-      const result = pseudoLegalMovesOf(position);
+      const result = pseudoLegalPlaysOf(position);
 
       expect(result).toContainEqual({ type: "move", from: "55", to: "44", promote: false });
       expect(result).toContainEqual({ type: "move", from: "55", to: "33", promote: false });

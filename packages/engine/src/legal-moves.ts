@@ -1,9 +1,9 @@
 import { isPromotable } from "./piece";
 import { columnOf, rowOf, squareOf, squares } from "./square";
-import type { Board, Piece, Play, Position, Square } from "./types";
+import type { Board, Move, Piece, Play, Position, Square } from "./types";
 
-export function pseudoLegalMovesOf(position: Position): Play[] {
-  const moves: Play[] = [];
+export function pseudoLegalPlaysOf(position: Position): Play[] {
+  const plays: Play[] = [];
 
   for (const square of squares) {
     const piece = position.board[square];
@@ -15,18 +15,18 @@ export function pseudoLegalMovesOf(position: Position): Play[] {
     switch (piece.type) {
       case "pawn": {
         const forward = piece.color === "black" ? -1 : 1;
-        moves.push(...stepMovesOf(position.board, square, [[0, forward]]));
+        plays.push(...steppingMovesOf(position.board, square, [[0, forward]]));
         break;
       }
       case "lance": {
         const forward = piece.color === "black" ? -1 : 1;
-        moves.push(...slidingMovesOf(position.board, square, [[0, forward]]));
+        plays.push(...slidingMovesOf(position.board, square, [[0, forward]]));
         break;
       }
       case "knight": {
         const forward = piece.color === "black" ? -2 : 2;
-        moves.push(
-          ...stepMovesOf(position.board, square, [
+        plays.push(
+          ...steppingMovesOf(position.board, square, [
             [-1, forward],
             [1, forward],
           ]),
@@ -35,8 +35,8 @@ export function pseudoLegalMovesOf(position: Position): Play[] {
       }
       case "silver": {
         const forward = piece.color === "black" ? -1 : 1;
-        moves.push(
-          ...stepMovesOf(position.board, square, [
+        plays.push(
+          ...steppingMovesOf(position.board, square, [
             [0, forward],
             [-1, forward],
             [1, forward],
@@ -52,8 +52,8 @@ export function pseudoLegalMovesOf(position: Position): Play[] {
       case "knight+":
       case "silver+": {
         const forward = piece.color === "black" ? -1 : 1;
-        moves.push(
-          ...stepMovesOf(position.board, square, [
+        plays.push(
+          ...steppingMovesOf(position.board, square, [
             [0, forward],
             [-1, forward],
             [1, forward],
@@ -65,31 +65,31 @@ export function pseudoLegalMovesOf(position: Position): Play[] {
         break;
       }
       case "king": {
-        moves.push(...stepMovesOf(position.board, square, KING_DIRECTIONS));
+        plays.push(...steppingMovesOf(position.board, square, KING_DIRECTIONS));
         break;
       }
       case "rook": {
-        moves.push(...slidingMovesOf(position.board, square, ROOK_DIRECTIONS));
+        plays.push(...slidingMovesOf(position.board, square, ROOK_DIRECTIONS));
         break;
       }
       case "rook+": {
-        moves.push(...stepMovesOf(position.board, square, BISHOP_DIRECTIONS));
-        moves.push(...slidingMovesOf(position.board, square, ROOK_DIRECTIONS));
+        plays.push(...steppingMovesOf(position.board, square, BISHOP_DIRECTIONS));
+        plays.push(...slidingMovesOf(position.board, square, ROOK_DIRECTIONS));
         break;
       }
       case "bishop": {
-        moves.push(...slidingMovesOf(position.board, square, BISHOP_DIRECTIONS));
+        plays.push(...slidingMovesOf(position.board, square, BISHOP_DIRECTIONS));
         break;
       }
       case "bishop+": {
-        moves.push(...stepMovesOf(position.board, square, ROOK_DIRECTIONS));
-        moves.push(...slidingMovesOf(position.board, square, BISHOP_DIRECTIONS));
+        plays.push(...steppingMovesOf(position.board, square, ROOK_DIRECTIONS));
+        plays.push(...slidingMovesOf(position.board, square, BISHOP_DIRECTIONS));
         break;
       }
     }
   }
 
-  return moves;
+  return plays;
 }
 
 const ROOK_DIRECTIONS = [
@@ -110,8 +110,8 @@ const KING_DIRECTIONS = [...ROOK_DIRECTIONS, ...BISHOP_DIRECTIONS] as const;
 
 type Direction = readonly [number, number];
 
-function stepMovesOf(board: Board, from: Square, directions: readonly Direction[]): Play[] {
-  const moves: Play[] = [];
+function steppingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
+  const moves: Move[] = [];
 
   const fromColumn = columnOf(from);
   const fromRow = rowOf(from);
@@ -128,8 +128,8 @@ function stepMovesOf(board: Board, from: Square, directions: readonly Direction[
   return moves;
 }
 
-function slidingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Play[] {
-  const moves: Play[] = [];
+function slidingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
+  const moves: Move[] = [];
 
   const fromColumn = columnOf(from);
   const fromRow = rowOf(from);
@@ -151,14 +151,14 @@ function slidingMovesOf(board: Board, from: Square, directions: readonly Directi
   return moves;
 }
 
-function movesOf(board: Board, from: Square, to: Square): Play[] {
+function movesOf(board: Board, from: Square, to: Square): Move[] {
   const piece = board[from];
   if (piece === null) return [];
 
   const toPiece = board[to];
   if (toPiece !== null && toPiece.color === piece.color) return [];
 
-  const moves: Play[] = [];
+  const moves: Move[] = [];
 
   if (canMoveWithoutPromotion(piece, to)) {
     moves.push({ type: "move", from, to, promote: false });
