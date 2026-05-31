@@ -85,13 +85,13 @@ export type PromotedPieceType =
 /**
  * 手
  */
-export type Move = NormalMove | DropMove;
+export type Play = Move | Drop;
 
 /**
  * 指し手
  */
-export type NormalMove = {
-  type: "normal";
+export type Move = {
+  type: "move";
   from: Square;
   to: Square;
   promote: boolean;
@@ -100,7 +100,7 @@ export type NormalMove = {
 /**
  * 持ち駒を打つ手
  */
-export type DropMove = {
+export type Drop = {
   type: "drop";
   piece: UnpromotedPieceType;
   to: Square;

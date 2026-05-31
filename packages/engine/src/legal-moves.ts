@@ -1,9 +1,9 @@
 import { isPromotable } from "./piece";
 import { columnOf, rowOf, squareOf, squares } from "./square";
-import type { Board, Move, Piece, Position, Square } from "./types";
+import type { Board, Piece, Play, Position, Square } from "./types";
 
-export function pseudoLegalMovesOf(position: Position): Move[] {
-  const moves: Move[] = [];
+export function pseudoLegalMovesOf(position: Position): Play[] {
+  const moves: Play[] = [];
 
   for (const square of squares) {
     const piece = position.board[square];
@@ -110,8 +110,8 @@ const KING_DIRECTIONS = [...ROOK_DIRECTIONS, ...BISHOP_DIRECTIONS] as const;
 
 type Direction = readonly [number, number];
 
-function stepMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
-  const moves: Move[] = [];
+function stepMovesOf(board: Board, from: Square, directions: readonly Direction[]): Play[] {
+  const moves: Play[] = [];
 
   const fromColumn = columnOf(from);
   const fromRow = rowOf(from);
@@ -122,14 +122,14 @@ function stepMovesOf(board: Board, from: Square, directions: readonly Direction[
     const to = squareOf(toColumn, toRow);
     if (to === null) continue;
 
-    moves.push(...normalMovesOf(board, from, to));
+    moves.push(...movesOf(board, from, to));
   }
 
   return moves;
 }
 
-function slidingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
-  const moves: Move[] = [];
+function slidingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Play[] {
+  const moves: Play[] = [];
 
   const fromColumn = columnOf(from);
   const fromRow = rowOf(from);
@@ -141,7 +141,7 @@ function slidingMovesOf(board: Board, from: Square, directions: readonly Directi
       const to = squareOf(toColumn, toRow);
       if (to === null) break;
 
-      moves.push(...normalMovesOf(board, from, to));
+      moves.push(...movesOf(board, from, to));
 
       // 駒があればそれ以上進めない
       if (board[to] !== null) break;
@@ -151,21 +151,21 @@ function slidingMovesOf(board: Board, from: Square, directions: readonly Directi
   return moves;
 }
 
-function normalMovesOf(board: Board, from: Square, to: Square): Move[] {
+function movesOf(board: Board, from: Square, to: Square): Play[] {
   const piece = board[from];
   if (piece === null) return [];
 
   const toPiece = board[to];
   if (toPiece !== null && toPiece.color === piece.color) return [];
 
-  const moves: Move[] = [];
+  const moves: Play[] = [];
 
   if (canMoveWithoutPromotion(piece, to)) {
-    moves.push({ type: "normal", from, to, promote: false });
+    moves.push({ type: "move", from, to, promote: false });
   }
 
   if (canPromote(piece, from, to)) {
-    moves.push({ type: "normal", from, to, promote: true });
+    moves.push({ type: "move", from, to, promote: true });
   }
 
   return moves;
