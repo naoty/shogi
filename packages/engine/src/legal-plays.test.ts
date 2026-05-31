@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { initialBoard } from "./board";
-import { pseudoLegalPlaysOf } from "./legal-moves";
+import { pseudoLegalPlaysOf } from "./legal-plays";
 import { setupBoard, setupHands } from "./test-data";
 
 describe("pseudoLegalPlaysOf", () => {
