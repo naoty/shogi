@@ -20,7 +20,7 @@ export type Hands = Record<Color, Hand>;
 /**
  * 持ち駒
  */
-export type Hand = Record<UnpromotedPieceType, number>;
+export type Hand = Record<DroppablePieceType, number>;
 
 /**
  * マス
@@ -83,6 +83,11 @@ export type PromotedPieceType =
   | "pawn+"; // と
 
 /**
+ * 持ち駒の種類
+ */
+export type DroppablePieceType = Exclude<UnpromotedPieceType, "king">;
+
+/**
  * 手
  */
 export type Play = Move | Drop;
@@ -102,6 +107,6 @@ export type Move = {
  */
 export type Drop = {
   type: "drop";
-  piece: UnpromotedPieceType;
+  piece: DroppablePieceType;
   to: Square;
 };

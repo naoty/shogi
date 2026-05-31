@@ -1,4 +1,4 @@
-import type { Board, Hand, Hands, UnpromotedPieceType } from "./types";
+import type { Board, DroppablePieceType, Hand, Hands } from "./types";
 
 export function setupBoard(partialBoard: Partial<Board> = {}): Board {
   const board = {} as Board;
@@ -13,8 +13,8 @@ export function setupBoard(partialBoard: Partial<Board> = {}): Board {
 }
 
 export function setupHands(
-  blackHand: Partial<Record<UnpromotedPieceType, number>> = {},
-  whiteHand: Partial<Record<UnpromotedPieceType, number>> = {},
+  blackHand: Partial<Record<DroppablePieceType, number>> = {},
+  whiteHand: Partial<Record<DroppablePieceType, number>> = {},
 ): Hands {
   return {
     black: setupHand(blackHand),
@@ -22,9 +22,7 @@ export function setupHands(
   };
 }
 
-export function setupHand(
-  partialHand: Partial<Record<UnpromotedPieceType, number>> = {},
-): Hand {
+export function setupHand(partialHand: Partial<Record<DroppablePieceType, number>> = {}): Hand {
   return {
     pawn: partialHand.pawn ?? 0,
     lance: partialHand.lance ?? 0,
@@ -33,6 +31,5 @@ export function setupHand(
     gold: partialHand.gold ?? 0,
     bishop: partialHand.bishop ?? 0,
     rook: partialHand.rook ?? 0,
-    king: partialHand.king ?? 0,
   };
 }
