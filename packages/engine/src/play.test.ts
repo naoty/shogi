@@ -42,6 +42,18 @@ describe("applyPlay", () => {
     expect(position2.board["22"]).toEqual({ color: "black", type: "bishop+" });
   });
 
+  test("駒を指す手で、移動先のマスに相手の駒がある場合、持ち駒に加える", () => {
+    const board = boardWith({
+      "28": { color: "black", type: "rook" },
+      "24": { color: "white", type: "pawn" },
+    });
+    const hands = setupHands();
+    const position1 = { board, hands, turn: "black" as const };
+    const play = { type: "move" as const, from: "28" as const, to: "24" as const, promote: false };
+    const position2 = applyPlay(position1, play);
+    expect(position2.hands.black.pawn).toBe(1);
+  });
+
   test("駒を指す手で、移動元のマスに駒がない場合、エラーを投げる", () => {
     const board = boardWith();
     const hands = setupHands();

@@ -13,3 +13,7 @@ export const droppablePieceTypes = [
 export function isPromotable(piece: Piece): boolean {
   return ["rook", "bishop", "silver", "knight", "lance", "pawn"].includes(piece.type);
 }
+
+export function isDroppable(pieceType: string): pieceType is DroppablePieceType {
+  return droppablePieceTypes.includes(pieceType as DroppablePieceType);
+}

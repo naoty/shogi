@@ -1,3 +1,4 @@
+import { isDroppable } from "./piece";
 import type { PieceType, Play, Position } from "./types";
 
 export function applyPlay(position: Position, play: Play): Position {
@@ -14,9 +15,18 @@ export function applyPlay(position: Position, play: Play): Position {
         [play.to]: play.promote ? { type: promote(piece.type), color: piece.color } : piece,
       };
 
+      const newHands = { ...position.hands };
+      const takenPiece = position.board[play.to];
+      if (takenPiece !== null && takenPiece.color !== position.turn && isDroppable(takenPiece.type)) {
+        newHands[position.turn] = {
+          ...position.hands[position.turn],
+          [takenPiece.type]: position.hands[position.turn][takenPiece.type] + 1,
+        };
+      }
+
       return {
-        ...position,
         board: newBoard,
+        hands: newHands,
         turn: position.turn === "black" ? "white" : "black",
       };
     }
@@ -30,6 +40,7 @@ export function applyPlay(position: Position, play: Play): Position {
         ...position.board,
         [play.to]: { type: play.piece, color: position.turn },
       };
+
       const newHands = {
         black: { ...position.hands.black },
         white: { ...position.hands.white },
@@ -38,6 +49,7 @@ export function applyPlay(position: Position, play: Play): Position {
           [play.piece]: pieceNumber - 1,
         },
       };
+
       return {
         ...position,
         board: newBoard,
