@@ -40,6 +40,10 @@ export function applyPlay(position: Position, play: Play): Position {
         throw new Error(`illegal play: no ${play.piece} in hand`);
       }
 
+      if (position.board[play.to] !== null) {
+        throw new Error(`illegal play: square ${play.to} is not empty`);
+      }
+
       const newBoard = {
         ...position.board,
         [play.to]: { type: play.piece, color: position.turn },

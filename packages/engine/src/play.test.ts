@@ -101,4 +101,14 @@ describe("applyPlay", () => {
     const play = { type: "drop" as const, piece: "pawn" as const, to: "55" as const };
     expect(() => applyPlay(position, play)).toThrow("illegal play: no pawn in hand");
   });
+
+  test("持ち駒を打つ手で、移動先のマスが空でない場合、エラーを投げる", () => {
+    const board = boardWith({
+      "55": { color: "white", type: "gold" },
+    });
+    const hands = setupHands({ pawn: 1 });
+    const position = { board, hands, turn: "black" as const };
+    const play = { type: "drop" as const, piece: "pawn" as const, to: "55" as const };
+    expect(() => applyPlay(position, play)).toThrow("illegal play: square 55 is not empty");
+  });
 });
