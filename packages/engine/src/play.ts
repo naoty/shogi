@@ -1,4 +1,4 @@
-import { demote, promote } from "./piece";
+import { demote, isPromotable, promote } from "./piece";
 import type { Play, Position } from "./types";
 
 export function applyPlay(position: Position, play: Play): Position {
@@ -10,6 +10,9 @@ export function applyPlay(position: Position, play: Play): Position {
       }
       if (piece.color !== position.turn) {
         throw new Error(`illegal play: piece at ${play.from} is not owned by ${position.turn}`);
+      }
+      if (play.promote && !isPromotable(piece)) {
+        throw new Error(`illegal play: piece at ${play.from} cannot be promoted`);
       }
 
       const newBoard = {

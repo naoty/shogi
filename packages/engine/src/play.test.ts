@@ -84,6 +84,16 @@ describe("applyPlay", () => {
     expect(() => applyPlay(position, play)).toThrow("illegal play: piece at 28 is not owned by black");
   });
 
+  test("駒を指す手で、成れない駒を成ろうとした場合、エラーを投げる", () => {
+    const board = boardWith({
+      "23": { color: "black", type: "gold" },
+    });
+    const hands = setupHands();
+    const position = { board, hands, turn: "black" as const };
+    const play = { type: "move" as const, from: "23" as const, to: "22" as const, promote: true };
+    expect(() => applyPlay(position, play)).toThrow("illegal play: piece at 23 cannot be promoted");
+  });
+
   test("持ち駒を打つ手の場合、持ち駒を減らして、移動先のマスに駒を置く", () => {
     const board = boardWith();
     const hands = setupHands({ pawn: 1 });
