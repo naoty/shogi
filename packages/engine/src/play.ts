@@ -30,6 +30,9 @@ export function applyPlay(position: Position, play: Play): Position {
           [demotedType]: position.hands[position.turn][demotedType] + 1,
         };
       }
+      if (takenPiece !== null && takenPiece.color === position.turn) {
+        throw new Error(`illegal play: cannot take own piece at ${play.to}`);
+      }
 
       return {
         board: newBoard,
@@ -42,7 +45,6 @@ export function applyPlay(position: Position, play: Play): Position {
       if (pieceNumber === 0) {
         throw new Error(`illegal play: no ${play.piece} in hand`);
       }
-
       if (position.board[play.to] !== null) {
         throw new Error(`illegal play: square ${play.to} is not empty`);
       }

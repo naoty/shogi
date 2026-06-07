@@ -94,6 +94,17 @@ describe("applyPlay", () => {
     expect(() => applyPlay(position, play)).toThrow("illegal play: piece at 23 cannot be promoted");
   });
 
+  test("駒を指す手で、移動先のマスに自分の駒がある場合、エラーを投げる", () => {
+    const board = boardWith({
+      "28": { color: "black", type: "rook" },
+      "27": { color: "black", type: "pawn" },
+    });
+    const hands = setupHands();
+    const position = { board, hands, turn: "black" as const };
+    const play = { type: "move" as const, from: "28" as const, to: "27" as const, promote: false };
+    expect(() => applyPlay(position, play)).toThrow("illegal play: cannot take own piece at 27");
+  });
+
   test("持ち駒を打つ手の場合、持ち駒を減らして、移動先のマスに駒を置く", () => {
     const board = boardWith();
     const hands = setupHands({ pawn: 1 });
