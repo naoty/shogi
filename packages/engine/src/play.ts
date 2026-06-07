@@ -1,5 +1,5 @@
-import { isDroppable } from "./piece";
-import type { PieceType, Play, Position } from "./types";
+import { demote, promote } from "./piece";
+import type { Play, Position } from "./types";
 
 export function applyPlay(position: Position, play: Play): Position {
   switch (play.type) {
@@ -17,10 +17,11 @@ export function applyPlay(position: Position, play: Play): Position {
 
       const newHands = { ...position.hands };
       const takenPiece = position.board[play.to];
-      if (takenPiece !== null && takenPiece.color !== position.turn && isDroppable(takenPiece.type)) {
+      if (takenPiece !== null && takenPiece.color !== position.turn) {
+        const demotedType = demote(takenPiece.type);
         newHands[position.turn] = {
           ...position.hands[position.turn],
-          [takenPiece.type]: position.hands[position.turn][takenPiece.type] + 1,
+          [demotedType]: position.hands[position.turn][demotedType] + 1,
         };
       }
 
@@ -63,24 +64,5 @@ export function applyPlay(position: Position, play: Play): Position {
         turn: position.turn === "black" ? "white" : "black",
       };
     }
-  }
-}
-
-function promote(pieceType: PieceType): PieceType {
-  switch (pieceType) {
-    case "pawn":
-      return "pawn+";
-    case "lance":
-      return "lance+";
-    case "knight":
-      return "knight+";
-    case "silver":
-      return "silver+";
-    case "bishop":
-      return "bishop+";
-    case "rook":
-      return "rook+";
-    default:
-      return pieceType;
   }
 }
