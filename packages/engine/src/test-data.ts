@@ -31,6 +31,5 @@ export function setupHand(partialHand: Partial<Record<DroppablePieceType, number
     gold: partialHand.gold ?? 0,
     bishop: partialHand.bishop ?? 0,
     rook: partialHand.rook ?? 0,
-    king: partialHand.king ?? 0,
   };
 }

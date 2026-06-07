@@ -1,4 +1,4 @@
-import { demote, isPromotable, promote } from "./piece";
+import { demote, isDroppable, isPromotable, promote } from "./piece";
 import type { Play, Position } from "./types";
 
 export function applyPlay(position: Position, play: Play): Position {
@@ -15,6 +15,14 @@ export function applyPlay(position: Position, play: Play): Position {
         throw new Error(`illegal play: piece at ${play.from} cannot be promoted`);
       }
 
+      const takenPiece = position.board[play.to];
+      if (takenPiece !== null && takenPiece.type === "king") {
+        throw new Error(`illegal play: cannot take king at ${play.to}`);
+      }
+      if (takenPiece !== null && takenPiece.color === position.turn) {
+        throw new Error(`illegal play: cannot take own piece at ${play.to}`);
+      }
+
       const newBoard = {
         ...position.board,
         [play.from]: null,
@@ -22,16 +30,14 @@ export function applyPlay(position: Position, play: Play): Position {
       };
 
       const newHands = { ...position.hands };
-      const takenPiece = position.board[play.to];
       if (takenPiece !== null && takenPiece.color !== position.turn) {
         const demotedType = demote(takenPiece.type);
-        newHands[position.turn] = {
-          ...position.hands[position.turn],
-          [demotedType]: position.hands[position.turn][demotedType] + 1,
-        };
-      }
-      if (takenPiece !== null && takenPiece.color === position.turn) {
-        throw new Error(`illegal play: cannot take own piece at ${play.to}`);
+        if (isDroppable(demotedType)) {
+          newHands[position.turn] = {
+            ...position.hands[position.turn],
+            [demotedType]: position.hands[position.turn][demotedType] + 1,
+          };
+        }
       }
 
       return {

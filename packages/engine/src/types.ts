@@ -85,7 +85,7 @@ export type PromotedPieceType =
 /**
  * 持ち駒の種類
  */
-export type DroppablePieceType = UnpromotedPieceType;
+export type DroppablePieceType = Exclude<UnpromotedPieceType, "king">;
 
 /**
  * 手

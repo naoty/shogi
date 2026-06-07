@@ -8,7 +8,6 @@ export const droppablePieceTypes = [
   "gold",
   "bishop",
   "rook",
-  "king",
 ] as const satisfies readonly DroppablePieceType[];
 
 export function isPromotable(piece: Piece): boolean {
