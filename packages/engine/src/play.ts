@@ -65,11 +65,5 @@ export function applyPlay(position: Position, play: Play): Position {
         turn: position.turn === "black" ? "white" : "black",
       };
     }
-    default: {
-      return {
-        ...position,
-        turn: position.turn === "black" ? "white" : "black",
-      };
-    }
   }
 }
