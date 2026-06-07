@@ -71,7 +71,7 @@ describe("applyPlay", () => {
     const hands = setupHands();
     const position = { board, hands, turn: "black" as const };
     const play = { type: "move" as const, from: "88" as const, to: "22" as const, promote: false };
-    expect(() => applyPlay(position, play)).toThrow("illegal play: no piece at 88");
+    expect(() => applyPlay(position, play)).toThrow("illegal move: no piece at 88");
   });
 
   test("駒を指す手で、移動元のマスの駒が自分のものでない場合、エラーを投げる", () => {
@@ -81,7 +81,7 @@ describe("applyPlay", () => {
     const hands = setupHands();
     const position = { board, hands, turn: "black" as const };
     const play = { type: "move" as const, from: "28" as const, to: "22" as const, promote: false };
-    expect(() => applyPlay(position, play)).toThrow("illegal play: piece at 28 is not owned by black");
+    expect(() => applyPlay(position, play)).toThrow("illegal move: piece at 28 is not owned by black");
   });
 
   test("駒を指す手で、成れない駒を成ろうとした場合、エラーを投げる", () => {
@@ -91,7 +91,7 @@ describe("applyPlay", () => {
     const hands = setupHands();
     const position = { board, hands, turn: "black" as const };
     const play = { type: "move" as const, from: "23" as const, to: "22" as const, promote: true };
-    expect(() => applyPlay(position, play)).toThrow("illegal play: piece at 23 cannot be promoted");
+    expect(() => applyPlay(position, play)).toThrow("illegal move: piece at 23 cannot be promoted");
   });
 
   test("駒を指す手で、移動先のマスに自分の駒がある場合、エラーを投げる", () => {
@@ -102,7 +102,7 @@ describe("applyPlay", () => {
     const hands = setupHands();
     const position = { board, hands, turn: "black" as const };
     const play = { type: "move" as const, from: "28" as const, to: "27" as const, promote: false };
-    expect(() => applyPlay(position, play)).toThrow("illegal play: cannot take own piece at 27");
+    expect(() => applyPlay(position, play)).toThrow("illegal move: cannot take own piece at 27");
   });
 
   test("駒を指す手で、移動先のマスに相手の王がある場合、エラーを投げる", () => {
@@ -113,7 +113,7 @@ describe("applyPlay", () => {
     const hands = setupHands();
     const position = { board, hands, turn: "black" as const };
     const play = { type: "move" as const, from: "55" as const, to: "51" as const, promote: false };
-    expect(() => applyPlay(position, play)).toThrow("illegal play: cannot take king at 51");
+    expect(() => applyPlay(position, play)).toThrow("illegal move: cannot take king at 51");
   });
 
   test("先手が持ち駒を打つ手の場合、持ち駒を減らして、移動先のマスに駒を置く", () => {
@@ -141,7 +141,7 @@ describe("applyPlay", () => {
     const hands = setupHands({ pawn: 0 });
     const position = { board, hands, turn: "black" as const };
     const play = { type: "drop" as const, piece: "pawn" as const, to: "55" as const };
-    expect(() => applyPlay(position, play)).toThrow("illegal play: no pawn in hand");
+    expect(() => applyPlay(position, play)).toThrow("illegal drop: no pawn in hand");
   });
 
   test("持ち駒を打つ手で、移動先のマスが空でない場合、エラーを投げる", () => {
@@ -151,6 +151,6 @@ describe("applyPlay", () => {
     const hands = setupHands({ pawn: 1 });
     const position = { board, hands, turn: "black" as const };
     const play = { type: "drop" as const, piece: "pawn" as const, to: "55" as const };
-    expect(() => applyPlay(position, play)).toThrow("illegal play: square 55 is not empty");
+    expect(() => applyPlay(position, play)).toThrow("illegal drop: square 55 is not empty");
   });
 });
