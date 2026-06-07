@@ -8,6 +8,9 @@ export function applyPlay(position: Position, play: Play): Position {
       if (piece === null) {
         throw new Error(`illegal play: no piece at ${play.from}`);
       }
+      if (piece.color !== position.turn) {
+        throw new Error(`illegal play: piece at ${play.from} is not owned by ${position.turn}`);
+      }
 
       const newBoard = {
         ...position.board,
