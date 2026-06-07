@@ -20,6 +20,31 @@ export function applyPlay(position: Position, play: Play): Position {
         turn: position.turn === "black" ? "white" : "black",
       };
     }
+    case "drop": {
+      const pieceNumber = position.hands[position.turn][play.piece];
+      if (pieceNumber === 0) {
+        throw new Error(`illegal play: no ${play.piece} in hand`);
+      }
+
+      const newBoard = {
+        ...position.board,
+        [play.to]: { type: play.piece, color: position.turn },
+      };
+      const newHands = {
+        black: { ...position.hands.black },
+        white: { ...position.hands.white },
+        [position.turn]: {
+          ...position.hands[position.turn],
+          [play.piece]: pieceNumber - 1,
+        },
+      };
+      return {
+        ...position,
+        board: newBoard,
+        hands: newHands,
+        turn: position.turn === "black" ? "white" : "black",
+      };
+    }
     default: {
       return {
         ...position,

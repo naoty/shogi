@@ -49,4 +49,22 @@ describe("applyPlay", () => {
     const play = { type: "move" as const, from: "88" as const, to: "22" as const, promote: false };
     expect(() => applyPlay(position, play)).toThrow("illegal play: no piece at 88");
   });
+
+  test("持ち駒を打つ手の場合、持ち駒を減らして、移動先のマスに駒を置く", () => {
+    const board = boardWith();
+    const hands = setupHands({ pawn: 1 });
+    const position1 = { board, hands, turn: "black" as const };
+    const play = { type: "drop" as const, piece: "pawn" as const, to: "55" as const };
+    const position2 = applyPlay(position1, play);
+    expect(position2.hands.black.pawn).toBe(0);
+    expect(position2.board["55"]).toEqual({ color: "black", type: "pawn" });
+  });
+
+  test("持ち駒を打つ手の場合、その駒が持ち駒になければ、エラーを投げる", () => {
+    const board = boardWith();
+    const hands = setupHands({ pawn: 0 });
+    const position = { board, hands, turn: "black" as const };
+    const play = { type: "drop" as const, piece: "pawn" as const, to: "55" as const };
+    expect(() => applyPlay(position, play)).toThrow("illegal play: no pawn in hand");
+  });
 });
