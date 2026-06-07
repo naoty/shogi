@@ -116,7 +116,7 @@ describe("applyPlay", () => {
     expect(() => applyPlay(position, play)).toThrow("illegal play: cannot take king at 51");
   });
 
-  test("持ち駒を打つ手の場合、持ち駒を減らして、移動先のマスに駒を置く", () => {
+  test("先手が持ち駒を打つ手の場合、持ち駒を減らして、移動先のマスに駒を置く", () => {
     const board = boardWith();
     const hands = setupHands({ pawn: 1 });
     const position1 = { board, hands, turn: "black" as const };
@@ -124,6 +124,16 @@ describe("applyPlay", () => {
     const position2 = applyPlay(position1, play);
     expect(position2.hands.black.pawn).toBe(0);
     expect(position2.board["55"]).toEqual({ color: "black", type: "pawn" });
+  });
+
+  test("後手が持ち駒を打つ手の場合、持ち駒を減らして、移動先のマスに駒を置く", () => {
+    const board = boardWith();
+    const hands = setupHands({}, { pawn: 1 });
+    const position1 = { board, hands, turn: "white" as const };
+    const play = { type: "drop" as const, piece: "pawn" as const, to: "55" as const };
+    const position2 = applyPlay(position1, play);
+    expect(position2.hands.white.pawn).toBe(0);
+    expect(position2.board["55"]).toEqual({ color: "white", type: "pawn" });
   });
 
   test("持ち駒を打つ手の場合、その駒が持ち駒になければ、エラーを投げる", () => {
