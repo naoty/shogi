@@ -1,6 +1,5 @@
-import { slidingMovesOf, steppingMovesOf } from "./legal-plays";
-import { squares } from "./square";
-import type { Color, Position, Square } from "./types";
+import { columnOf, rowOf, squareOf, squares } from "./square";
+import type { Board, Color, Position, Square } from "./types";
 
 export function isCheck(position: Position): boolean {
   const kingSquare = kingSquareOf(position, position.turn);
@@ -13,35 +12,35 @@ export function isCheck(position: Position): boolean {
     switch (piece.type) {
       case "pawn": {
         const forward = piece.color === "black" ? -1 : 1;
-        const moves = steppingMovesOf(position.board, square, [[0, forward]]);
-        if (moves.some((move) => move.to === kingSquare)) return true;
+        const attacks = steppingAttacksOf(square, [[0, forward]]);
+        if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
       case "lance": {
         const forward = piece.color === "black" ? -1 : 1;
-        const moves = slidingMovesOf(position.board, square, [[0, forward]]);
-        if (moves.some((move) => move.to === kingSquare)) return true;
+        const attacks = slidingAttacksOf(position.board, square, [[0, forward]]);
+        if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
       case "knight": {
         const forward = piece.color === "black" ? -2 : 2;
-        const moves = steppingMovesOf(position.board, square, [
+        const attacks = steppingAttacksOf(square, [
           [-1, forward],
           [1, forward],
         ]);
-        if (moves.some((move) => move.to === kingSquare)) return true;
+        if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
       case "silver": {
         const forward = piece.color === "black" ? -1 : 1;
-        const moves = steppingMovesOf(position.board, square, [
+        const attacks = steppingAttacksOf(square, [
           [0, forward],
           [-1, forward],
           [1, forward],
           [-1, -forward],
           [1, -forward],
         ]);
-        if (moves.some((move) => move.to === kingSquare)) return true;
+        if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
       case "gold":
@@ -50,7 +49,7 @@ export function isCheck(position: Position): boolean {
       case "knight+":
       case "silver+": {
         const forward = piece.color === "black" ? -1 : 1;
-        const moves = steppingMovesOf(position.board, square, [
+        const attacks = steppingAttacksOf(square, [
           [0, forward],
           [-1, forward],
           [1, forward],
@@ -58,68 +57,68 @@ export function isCheck(position: Position): boolean {
           [1, 0],
           [0, -forward],
         ]);
-        if (moves.some((move) => move.to === kingSquare)) return true;
+        if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
       case "bishop": {
-        const moves = slidingMovesOf(position.board, square, [
+        const attacks = slidingAttacksOf(position.board, square, [
           [-1, -1],
           [-1, 1],
           [1, -1],
           [1, 1],
         ]);
-        if (moves.some((move) => move.to === kingSquare)) return true;
+        if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
       case "rook": {
-        const moves = slidingMovesOf(position.board, square, [
+        const attacks = slidingAttacksOf(position.board, square, [
           [0, 1],
           [0, -1],
           [-1, 0],
           [1, 0],
         ]);
-        if (moves.some((move) => move.to === kingSquare)) return true;
+        if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
       case "rook+": {
-        const moves = [
-          ...slidingMovesOf(position.board, square, [
+        const attacks = [
+          ...slidingAttacksOf(position.board, square, [
             [0, 1],
             [0, -1],
             [-1, 0],
             [1, 0],
           ]),
-          ...steppingMovesOf(position.board, square, [
+          ...steppingAttacksOf(square, [
             [-1, -1],
             [-1, 1],
             [1, -1],
             [1, 1],
           ]),
         ];
-        if (moves.some((move) => move.to === kingSquare)) return true;
+        if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
       case "bishop+": {
-        const moves = [
-          ...slidingMovesOf(position.board, square, [
+        const attacks = [
+          ...slidingAttacksOf(position.board, square, [
             [-1, -1],
             [-1, 1],
             [1, -1],
             [1, 1],
           ]),
-          ...steppingMovesOf(position.board, square, [
+          ...steppingAttacksOf(square, [
             [0, 1],
             [0, -1],
             [-1, 0],
             [1, 0],
           ]),
         ];
-        if (moves.some((move) => move.to === kingSquare)) return true;
+        if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
       // 玉による王手は自殺手であるが、合法手だけが指されることを前提としない
       case "king": {
-        const moves = steppingMovesOf(position.board, square, [
+        const attacks = steppingAttacksOf(square, [
           [0, 1],
           [0, -1],
           [-1, 0],
@@ -129,7 +128,7 @@ export function isCheck(position: Position): boolean {
           [1, -1],
           [1, 1],
         ]);
-        if (moves.some((move) => move.to === kingSquare)) return true;
+        if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
     }
@@ -147,4 +146,47 @@ function kingSquareOf(position: Position, color: Color): Square {
   }
 
   throw new Error(`invalid position: no king of color ${color}`);
+}
+
+type Direction = readonly [number, number];
+
+function steppingAttacksOf(from: Square, directions: readonly Direction[]): Square[] {
+  const fromColumn = columnOf(from);
+  const fromRow = rowOf(from);
+
+  const attacks: Square[] = [];
+
+  for (const [columnDirection, rowDirection] of directions) {
+    const toColumn = fromColumn + columnDirection;
+    const toRow = fromRow + rowDirection;
+    const to = squareOf(toColumn, toRow);
+    if (to === null) continue;
+
+    attacks.push(to);
+  }
+
+  return attacks;
+}
+
+function slidingAttacksOf(board: Board, from: Square, directions: readonly Direction[]): Square[] {
+  const fromColumn = columnOf(from);
+  const fromRow = rowOf(from);
+
+  const attacks: Square[] = [];
+
+  for (const [columnDirection, rowDirection] of directions) {
+    for (let distance = 1; distance <= 8; distance++) {
+      const toColumn = fromColumn + columnDirection * distance;
+      const toRow = fromRow + rowDirection * distance;
+      const to = squareOf(toColumn, toRow);
+      if (to === null) break;
+
+      attacks.push(to);
+
+      // 駒があればそれ以上進めない
+      if (board[to] !== null) break;
+    }
+  }
+
+  return attacks;
 }

@@ -113,7 +113,7 @@ const KING_DIRECTIONS = [...ROOK_DIRECTIONS, ...BISHOP_DIRECTIONS] as const;
 
 type Direction = readonly [number, number];
 
-export function steppingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
+function steppingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
   const moves: Move[] = [];
 
   const fromColumn = columnOf(from);
@@ -131,7 +131,7 @@ export function steppingMovesOf(board: Board, from: Square, directions: readonly
   return moves;
 }
 
-export function slidingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
+function slidingMovesOf(board: Board, from: Square, directions: readonly Direction[]): Move[] {
   const moves: Move[] = [];
 
   const fromColumn = columnOf(from);
