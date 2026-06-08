@@ -117,6 +117,21 @@ export function isCheck(position: Position): boolean {
         if (moves.some((move) => move.to === kingSquare)) return true;
         break;
       }
+      // 玉による王手は自殺手であるが、合法手だけが指されることを前提としない
+      case "king": {
+        const moves = steppingMovesOf(position.board, square, [
+          [0, 1],
+          [0, -1],
+          [-1, 0],
+          [1, 0],
+          [-1, -1],
+          [-1, 1],
+          [1, -1],
+          [1, 1],
+        ]);
+        if (moves.some((move) => move.to === kingSquare)) return true;
+        break;
+      }
     }
   }
 

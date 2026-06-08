@@ -108,6 +108,16 @@ describe("isCheck", () => {
     expect(isCheck(position)).toBe(false);
   });
 
+  test("玉による王手を判定する", () => {
+    const board = boardWith({
+      "55": { color: "black", type: "king" },
+      "44": { color: "white", type: "king" },
+    });
+    const hands = setupHands();
+    const position = { board, hands, turn: "black" as const };
+    expect(isCheck(position)).toBe(true);
+  });
+
   test("龍による王手を判定する", () => {
     const board = boardWith({
       "55": { color: "black", type: "king" },
