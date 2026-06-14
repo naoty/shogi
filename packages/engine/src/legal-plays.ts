@@ -1,6 +1,16 @@
+import { isCheck } from "./check";
 import { droppablePieceTypes, isPromotable } from "./piece";
+import { applyPlay } from "./play";
 import { columnOf, rowOf, squareOf, squares } from "./square";
 import type { Board, Color, Drop, Move, Piece, Play, Position, Square } from "./types";
+
+export function legalPlaysOf(position: Position): Play[] {
+  // TODO: 打ち歩詰めを除外する
+  return pseudoLegalPlaysOf(position).filter((play) => {
+    const next = applyPlay(position, play);
+    return !isCheck(next, position.turn);
+  });
+}
 
 export function pseudoLegalPlaysOf(position: Position): Play[] {
   const plays: Play[] = [];

@@ -1,7 +1,49 @@
 import { describe, expect, test } from "vitest";
 import { initialBoard } from "./board";
-import { pseudoLegalPlaysOf } from "./legal-plays";
+import { legalPlaysOf, pseudoLegalPlaysOf } from "./legal-plays";
 import { setupBoard, setupHands } from "./test-data";
+
+describe("legalPlaysOf", () => {
+  test("王手を回避する手を返す", () => {
+    const board = setupBoard({
+      "59": { color: "black", type: "king" },
+      "55": { color: "white", type: "rook" },
+    });
+    const hands = setupHands({ pawn: 1 });
+    const position = { board, hands, turn: "black" as const };
+    const result = legalPlaysOf(position);
+
+    expect(result).toContainEqual({ type: "move", from: "59", to: "49", promote: false });
+    expect(result).toContainEqual({ type: "drop", piece: "pawn", to: "58" });
+  });
+
+  test("王手を放置する手を返さない", () => {
+    const board = setupBoard({
+      "59": { color: "black", type: "king" },
+      "49": { color: "black", type: "gold" },
+      "55": { color: "white", type: "rook" },
+    });
+    const hands = setupHands({ pawn: 1 });
+    const position = { board, hands, turn: "black" as const };
+    const result = legalPlaysOf(position);
+
+    expect(result).not.toContainEqual({ type: "move", from: "49", to: "48", promote: false });
+    expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "48" });
+  });
+
+  test("自殺手を返さない", () => {
+    const board = setupBoard({
+      "59": { color: "black", type: "king" },
+      "58": { color: "black", type: "bishop" },
+      "57": { color: "white", type: "lance" },
+    });
+    const hands = setupHands();
+    const position = { board, hands, turn: "black" as const };
+    const result = legalPlaysOf(position);
+
+    expect(result).not.toContainEqual({ type: "move", from: "58", to: "47", promote: false });
+  });
+});
 
 describe("pseudoLegalPlaysOf", () => {
   describe("盤上の駒を動かす手を返す", () => {
