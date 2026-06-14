@@ -1,13 +1,18 @@
 import { columnOf, rowOf, squareOf, squares } from "./square";
 import type { Board, Color, Position, Square } from "./types";
 
-export function isCheck(position: Position): boolean {
-  const kingSquare = kingSquareOf(position, position.turn);
+/**
+ * 王手を判定する
+ *
+ * 引数のpositionにおいて、turnの手番の場合に王手がかかっているかを返す。
+ */
+export function isCheck(position: Position, turn: Color = position.turn): boolean {
+  const kingSquare = kingSquareOf(position, turn);
 
   for (const square of squares) {
     const piece = position.board[square];
 
-    if (piece === null || piece.color === position.turn) continue;
+    if (piece === null || piece.color === turn) continue;
 
     switch (piece.type) {
       case "pawn": {
