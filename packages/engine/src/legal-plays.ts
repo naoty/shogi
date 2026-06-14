@@ -170,6 +170,7 @@ function movesOf(board: Board, from: Square, to: Square): Move[] {
 
   const toPiece = board[to];
   if (toPiece !== null && toPiece.color === piece.color) return [];
+  if (toPiece !== null && toPiece.type === "king") return [];
 
   const moves: Move[] = [];
 

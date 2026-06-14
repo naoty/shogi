@@ -490,6 +490,18 @@ describe("pseudoLegalPlaysOf", () => {
         expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
       });
 
+      test("動かす先に相手の王がある場合、その王を取る手を返さない", () => {
+        const board = setupBoard({
+          "55": { color: "black", type: "pawn" },
+          "54": { color: "white", type: "king" },
+        });
+        const hands = setupHands();
+        const position = { board, hands, turn: "black" as const };
+        const result = pseudoLegalPlaysOf(position);
+
+        expect(result).not.toContainEqual({ type: "move", from: "55", to: "54", promote: false });
+      });
+
       test("王を成る手を返してはいけない", () => {
         const board = setupBoard({
           "54": { color: "black", type: "king" },
@@ -561,7 +573,6 @@ describe("pseudoLegalPlaysOf", () => {
         const result = pseudoLegalPlaysOf(position);
 
         expect(result).toContainEqual({ type: "move", from: "55", to: "53", promote: false });
-        expect(result).toContainEqual({ type: "move", from: "55", to: "58", promote: false });
         expect(result).toContainEqual({ type: "move", from: "55", to: "25", promote: false });
         expect(result).toContainEqual({ type: "move", from: "55", to: "75", promote: false });
         expect(result).not.toContainEqual({ type: "move", from: "55", to: "52", promote: false });
@@ -655,7 +666,6 @@ describe("pseudoLegalPlaysOf", () => {
         const result = pseudoLegalPlaysOf(position);
 
         expect(result).toContainEqual({ type: "move", from: "55", to: "33", promote: false });
-        expect(result).toContainEqual({ type: "move", from: "55", to: "66", promote: false });
         expect(result).toContainEqual({ type: "move", from: "55", to: "37", promote: false });
         expect(result).toContainEqual({ type: "move", from: "55", to: "73", promote: false });
         expect(result).not.toContainEqual({ type: "move", from: "55", to: "22", promote: false });
@@ -790,7 +800,6 @@ describe("pseudoLegalPlaysOf", () => {
 
         expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
         expect(result).toContainEqual({ type: "move", from: "55", to: "53", promote: false });
-        expect(result).toContainEqual({ type: "move", from: "55", to: "56", promote: false });
         expect(result).toContainEqual({ type: "move", from: "55", to: "45", promote: false });
         expect(result).toContainEqual({ type: "move", from: "55", to: "65", promote: false });
         expect(result).not.toContainEqual({ type: "move", from: "55", to: "52", promote: false });
@@ -867,7 +876,6 @@ describe("pseudoLegalPlaysOf", () => {
 
         expect(result).toContainEqual({ type: "move", from: "55", to: "44", promote: false });
         expect(result).toContainEqual({ type: "move", from: "55", to: "33", promote: false });
-        expect(result).toContainEqual({ type: "move", from: "55", to: "54", promote: false });
         expect(result).not.toContainEqual({ type: "move", from: "55", to: "22", promote: false });
         expect(result).not.toContainEqual({ type: "move", from: "55", to: "11", promote: false });
       });
