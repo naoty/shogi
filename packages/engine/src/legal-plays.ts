@@ -1,22 +1,11 @@
-import { isCheck, isCheckmate } from "./check";
+import { isCheck } from "./check";
 import { droppablePieceTypes, isPromotable } from "./piece";
 import { applyPlay } from "./play";
 import { columnOf, rowOf, squareOf, squares } from "./square";
 import type { Board, Color, Drop, Move, Piece, Play, Position, Square } from "./types";
 
 export function legalPlaysOf(position: Position, turn: Color = position.turn): Play[] {
-  const currentPosition = { ...position, turn };
-
-  return pseudoLegalPlaysOf(currentPosition).filter((play) => {
-    const next = applyPlay(currentPosition, play);
-
-    // 打ち歩詰めの禁止
-    if (play.type === "drop" && play.piece === "pawn" && isCheckmate(next)) {
-      return false;
-    }
-
-    return !isCheck(next, turn);
-  });
+  return legalPlaysWithPawnDropCheckmateOf(position, turn).filter((play) => !isPawnDropCheckmate(position, turn, play));
 }
 
 export function pseudoLegalPlaysOf(position: Position, turn: Color = position.turn): Play[] {
@@ -111,6 +100,15 @@ export function pseudoLegalPlaysOf(position: Position, turn: Color = position.tu
   }
 
   return plays;
+}
+
+export function legalPlaysWithPawnDropCheckmateOf(position: Position, turn: Color = position.turn): Play[] {
+  const currentPosition = { ...position, turn };
+
+  return pseudoLegalPlaysOf(currentPosition).filter((play) => {
+    const next = applyPlay(currentPosition, play);
+    return !isCheck(next, turn);
+  });
 }
 
 const ROOK_DIRECTIONS = [
@@ -245,4 +243,14 @@ function hasUnpromotedPawnInColumn(board: Board, color: Color, column: number): 
     const piece = board[square];
     return columnOf(square) === column && piece !== null && piece.color === color && piece.type === "pawn";
   });
+}
+
+function isPawnDropCheckmate(position: Position, turn: Color, play: Play): boolean {
+  if (play.type !== "drop" || play.piece !== "pawn") return false;
+
+  const currentPosition = { ...position, turn };
+  const next = applyPlay(currentPosition, play);
+
+  if (!isCheck(next)) return false;
+  return legalPlaysWithPawnDropCheckmateOf(next).length === 0;
 }
