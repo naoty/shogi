@@ -1,13 +1,18 @@
-import { isCheck } from "./check";
+import { isCheck, isCheckmate } from "./check";
 import { droppablePieceTypes, isPromotable } from "./piece";
 import { applyPlay } from "./play";
 import { columnOf, rowOf, squareOf, squares } from "./square";
 import type { Board, Color, Drop, Move, Piece, Play, Position, Square } from "./types";
 
 export function legalPlaysOf(position: Position): Play[] {
-  // TODO: 打ち歩詰めを除外する
   return pseudoLegalPlaysOf(position).filter((play) => {
     const next = applyPlay(position, play);
+
+    // 打ち歩詰めの禁止
+    if (play.type === "drop" && play.piece === "pawn" && isCheckmate(next)) {
+      return false;
+    }
+
     return !isCheck(next, position.turn);
   });
 }

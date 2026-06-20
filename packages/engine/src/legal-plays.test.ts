@@ -8,6 +8,7 @@ describe("legalPlaysOf", () => {
     const board = setupBoard({
       "59": { color: "black", type: "king" },
       "55": { color: "white", type: "rook" },
+      "51": { color: "white", type: "king" },
     });
     const hands = setupHands({ pawn: 1 });
     const position = { board, hands, turn: "black" as const };
@@ -22,6 +23,7 @@ describe("legalPlaysOf", () => {
       "59": { color: "black", type: "king" },
       "49": { color: "black", type: "gold" },
       "55": { color: "white", type: "rook" },
+      "51": { color: "white", type: "king" },
     });
     const hands = setupHands({ pawn: 1 });
     const position = { board, hands, turn: "black" as const };
@@ -42,6 +44,22 @@ describe("legalPlaysOf", () => {
     const result = legalPlaysOf(position);
 
     expect(result).not.toContainEqual({ type: "move", from: "58", to: "47", promote: false });
+  });
+
+  test("打ち歩詰めを返さない", () => {
+    const board = setupBoard({
+      "59": { color: "black", type: "king" },
+      "53": { color: "black", type: "gold" },
+      "42": { color: "black", type: "pawn" },
+      "62": { color: "black", type: "pawn" },
+      "51": { color: "white", type: "king" },
+    });
+    const hands = setupHands({ pawn: 1, silver: 1 });
+    const position = { board, hands, turn: "black" as const };
+    const result = legalPlaysOf(position);
+
+    expect(result).not.toContainEqual({ type: "drop", piece: "pawn", to: "52" });
+    expect(result).toContainEqual({ type: "drop", piece: "silver", to: "52" });
   });
 });
 
