@@ -147,7 +147,7 @@ export function isCheck(position: Position, turn: Color = position.turn): boolea
  * 詰みを判定する
  */
 export function isCheckmate(position: Position, turn: Color = position.turn): boolean {
-  return isCheck(position, turn) && legalPlaysOf(position).length === 0;
+  return isCheck(position, turn) && legalPlaysOf(position, turn).length === 0;
 }
 
 function kingSquareOf(position: Position, color: Color): Square {

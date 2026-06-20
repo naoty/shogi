@@ -175,6 +175,17 @@ describe("isCheck", () => {
     const position = { board: initialBoard, hands, turn: "black" as const };
     expect(isCheck(position)).toBe(false);
   });
+
+  test("引数で渡した手番に王手がかかっているか判定する", () => {
+    const board = boardWith({
+      "55": { color: "white", type: "king" },
+      "56": { color: "black", type: "pawn" },
+      "59": { color: "black", type: "king" },
+    });
+    const hands = setupHands();
+    const position = { board, hands, turn: "black" as const };
+    expect(isCheck(position, "white")).toBe(true);
+  });
 });
 
 describe("isCheckmate", () => {
@@ -200,5 +211,18 @@ describe("isCheckmate", () => {
     const position = { board, hands, turn: "black" as const };
 
     expect(isCheckmate(position)).toBe(false);
+  });
+
+  test("引数で渡した手番に詰みがかかっているか判定する", () => {
+    const board = boardWith({
+      "51": { color: "white", type: "king" },
+      "52": { color: "black", type: "gold" },
+      "53": { color: "black", type: "gold" },
+      "59": { color: "black", type: "king" },
+    });
+    const hands = setupHands();
+    const position = { board, hands, turn: "black" as const };
+
+    expect(isCheckmate(position, "white")).toBe(true);
   });
 });

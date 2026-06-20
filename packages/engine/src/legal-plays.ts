@@ -4,8 +4,8 @@ import { applyPlay } from "./play";
 import { columnOf, rowOf, squareOf, squares } from "./square";
 import type { Board, Color, Drop, Move, Piece, Play, Position, Square } from "./types";
 
-export function legalPlaysOf(position: Position): Play[] {
-  return pseudoLegalPlaysOf(position).filter((play) => {
+export function legalPlaysOf(position: Position, turn: Color = position.turn): Play[] {
+  return pseudoLegalPlaysOf(position, turn).filter((play) => {
     const next = applyPlay(position, play);
 
     // 打ち歩詰めの禁止
@@ -13,11 +13,11 @@ export function legalPlaysOf(position: Position): Play[] {
       return false;
     }
 
-    return !isCheck(next, position.turn);
+    return !isCheck(next, turn);
   });
 }
 
-export function pseudoLegalPlaysOf(position: Position): Play[] {
+export function pseudoLegalPlaysOf(position: Position, turn: Color = position.turn): Play[] {
   const plays: Play[] = [];
 
   for (const square of squares) {
@@ -28,7 +28,7 @@ export function pseudoLegalPlaysOf(position: Position): Play[] {
       continue;
     }
 
-    if (piece.color !== position.turn) continue;
+    if (piece.color !== turn) continue;
 
     switch (piece.type) {
       case "pawn": {
