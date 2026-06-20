@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { boardWith, initialBoard } from "./board";
-import { isCheck } from "./check";
+import { isCheck, isCheckmate } from "./check";
 import { setupHands } from "./test-data";
 
 describe("isCheck", () => {
@@ -174,5 +174,31 @@ describe("isCheck", () => {
     const hands = setupHands();
     const position = { board: initialBoard, hands, turn: "black" as const };
     expect(isCheck(position)).toBe(false);
+  });
+});
+
+describe("isCheckmate", () => {
+  test("詰みを判定する", () => {
+    const board = boardWith({
+      "59": { color: "black", type: "king" },
+      "57": { color: "white", type: "gold" },
+      "58": { color: "white", type: "gold" },
+    });
+    const hands = setupHands();
+    const position = { board, hands, turn: "black" as const };
+
+    expect(isCheckmate(position)).toBe(true);
+  });
+
+  test("不詰を判定する", () => {
+    const board = boardWith({
+      "59": { color: "black", type: "king" },
+      "57": { color: "white", type: "gold" },
+      "58": { color: "white", type: "pawn" },
+    });
+    const hands = setupHands();
+    const position = { board, hands, turn: "black" as const };
+
+    expect(isCheckmate(position)).toBe(false);
   });
 });

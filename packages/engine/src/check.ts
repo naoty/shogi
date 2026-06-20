@@ -1,3 +1,4 @@
+import { legalPlaysOf } from "./legal-plays";
 import { columnOf, rowOf, squareOf, squares } from "./square";
 import type { Board, Color, Position, Square } from "./types";
 
@@ -140,6 +141,13 @@ export function isCheck(position: Position, turn: Color = position.turn): boolea
   }
 
   return false;
+}
+
+/**
+ * 詰みを判定する
+ */
+export function isCheckmate(position: Position, turn: Color = position.turn): boolean {
+  return isCheck(position, turn) && legalPlaysOf(position).length === 0;
 }
 
 function kingSquareOf(position: Position, color: Color): Square {
