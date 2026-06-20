@@ -8,12 +8,13 @@ import type { Board, Color, Position, Square } from "./types";
  * 引数のpositionにおいて、turnの手番の場合に王手がかかっているかを返す。
  */
 export function isCheck(position: Position, turn: Color = position.turn): boolean {
-  const kingSquare = kingSquareOf(position, turn);
+  const currentPosition = { ...position, turn };
+  const kingSquare = kingSquareOf(currentPosition);
 
   for (const square of squares) {
-    const piece = position.board[square];
+    const piece = currentPosition.board[square];
 
-    if (piece === null || piece.color === turn) continue;
+    if (piece === null || piece.color === currentPosition.turn) continue;
 
     switch (piece.type) {
       case "pawn": {
@@ -24,7 +25,7 @@ export function isCheck(position: Position, turn: Color = position.turn): boolea
       }
       case "lance": {
         const forward = piece.color === "black" ? -1 : 1;
-        const attacks = slidingAttacksOf(position.board, square, [[0, forward]]);
+        const attacks = slidingAttacksOf(currentPosition.board, square, [[0, forward]]);
         if (attacks.some((attack) => attack === kingSquare)) return true;
         break;
       }
@@ -67,7 +68,7 @@ export function isCheck(position: Position, turn: Color = position.turn): boolea
         break;
       }
       case "bishop": {
-        const attacks = slidingAttacksOf(position.board, square, [
+        const attacks = slidingAttacksOf(currentPosition.board, square, [
           [-1, -1],
           [-1, 1],
           [1, -1],
@@ -77,7 +78,7 @@ export function isCheck(position: Position, turn: Color = position.turn): boolea
         break;
       }
       case "rook": {
-        const attacks = slidingAttacksOf(position.board, square, [
+        const attacks = slidingAttacksOf(currentPosition.board, square, [
           [0, 1],
           [0, -1],
           [-1, 0],
@@ -88,7 +89,7 @@ export function isCheck(position: Position, turn: Color = position.turn): boolea
       }
       case "rook+": {
         const attacks = [
-          ...slidingAttacksOf(position.board, square, [
+          ...slidingAttacksOf(currentPosition.board, square, [
             [0, 1],
             [0, -1],
             [-1, 0],
@@ -106,7 +107,7 @@ export function isCheck(position: Position, turn: Color = position.turn): boolea
       }
       case "bishop+": {
         const attacks = [
-          ...slidingAttacksOf(position.board, square, [
+          ...slidingAttacksOf(currentPosition.board, square, [
             [-1, -1],
             [-1, 1],
             [1, -1],
@@ -150,15 +151,15 @@ export function isCheckmate(position: Position, turn: Color = position.turn): bo
   return isCheck(position, turn) && legalPlaysOf(position, turn).length === 0;
 }
 
-function kingSquareOf(position: Position, color: Color): Square {
+function kingSquareOf(position: Position): Square {
   for (const square of squares) {
     const piece = position.board[square];
-    if (piece !== null && piece.color === color && piece.type === "king") {
+    if (piece !== null && piece.color === position.turn && piece.type === "king") {
       return square;
     }
   }
 
-  throw new Error(`invalid position: no king of color ${color}`);
+  throw new Error(`invalid position: no king of color ${position.turn}`);
 }
 
 type Direction = readonly [number, number];

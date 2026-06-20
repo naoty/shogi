@@ -5,8 +5,10 @@ import { columnOf, rowOf, squareOf, squares } from "./square";
 import type { Board, Color, Drop, Move, Piece, Play, Position, Square } from "./types";
 
 export function legalPlaysOf(position: Position, turn: Color = position.turn): Play[] {
-  return pseudoLegalPlaysOf(position, turn).filter((play) => {
-    const next = applyPlay(position, play);
+  const currentPosition = { ...position, turn };
+
+  return pseudoLegalPlaysOf(currentPosition).filter((play) => {
+    const next = applyPlay(currentPosition, play);
 
     // 打ち歩詰めの禁止
     if (play.type === "drop" && play.piece === "pawn" && isCheckmate(next)) {
@@ -19,32 +21,33 @@ export function legalPlaysOf(position: Position, turn: Color = position.turn): P
 
 export function pseudoLegalPlaysOf(position: Position, turn: Color = position.turn): Play[] {
   const plays: Play[] = [];
+  const currentPosition = { ...position, turn };
 
   for (const square of squares) {
-    const piece = position.board[square];
+    const piece = currentPosition.board[square];
 
     if (piece === null) {
-      plays.push(...dropsOf(position, square));
+      plays.push(...dropsOf(currentPosition, square));
       continue;
     }
 
-    if (piece.color !== turn) continue;
+    if (piece.color !== currentPosition.turn) continue;
 
     switch (piece.type) {
       case "pawn": {
         const forward = piece.color === "black" ? -1 : 1;
-        plays.push(...steppingMovesOf(position.board, square, [[0, forward]]));
+        plays.push(...steppingMovesOf(currentPosition.board, square, [[0, forward]]));
         break;
       }
       case "lance": {
         const forward = piece.color === "black" ? -1 : 1;
-        plays.push(...slidingMovesOf(position.board, square, [[0, forward]]));
+        plays.push(...slidingMovesOf(currentPosition.board, square, [[0, forward]]));
         break;
       }
       case "knight": {
         const forward = piece.color === "black" ? -2 : 2;
         plays.push(
-          ...steppingMovesOf(position.board, square, [
+          ...steppingMovesOf(currentPosition.board, square, [
             [-1, forward],
             [1, forward],
           ]),
@@ -54,7 +57,7 @@ export function pseudoLegalPlaysOf(position: Position, turn: Color = position.tu
       case "silver": {
         const forward = piece.color === "black" ? -1 : 1;
         plays.push(
-          ...steppingMovesOf(position.board, square, [
+          ...steppingMovesOf(currentPosition.board, square, [
             [0, forward],
             [-1, forward],
             [1, forward],
@@ -71,7 +74,7 @@ export function pseudoLegalPlaysOf(position: Position, turn: Color = position.tu
       case "silver+": {
         const forward = piece.color === "black" ? -1 : 1;
         plays.push(
-          ...steppingMovesOf(position.board, square, [
+          ...steppingMovesOf(currentPosition.board, square, [
             [0, forward],
             [-1, forward],
             [1, forward],
@@ -83,25 +86,25 @@ export function pseudoLegalPlaysOf(position: Position, turn: Color = position.tu
         break;
       }
       case "king": {
-        plays.push(...steppingMovesOf(position.board, square, KING_DIRECTIONS));
+        plays.push(...steppingMovesOf(currentPosition.board, square, KING_DIRECTIONS));
         break;
       }
       case "rook": {
-        plays.push(...slidingMovesOf(position.board, square, ROOK_DIRECTIONS));
+        plays.push(...slidingMovesOf(currentPosition.board, square, ROOK_DIRECTIONS));
         break;
       }
       case "rook+": {
-        plays.push(...steppingMovesOf(position.board, square, BISHOP_DIRECTIONS));
-        plays.push(...slidingMovesOf(position.board, square, ROOK_DIRECTIONS));
+        plays.push(...steppingMovesOf(currentPosition.board, square, BISHOP_DIRECTIONS));
+        plays.push(...slidingMovesOf(currentPosition.board, square, ROOK_DIRECTIONS));
         break;
       }
       case "bishop": {
-        plays.push(...slidingMovesOf(position.board, square, BISHOP_DIRECTIONS));
+        plays.push(...slidingMovesOf(currentPosition.board, square, BISHOP_DIRECTIONS));
         break;
       }
       case "bishop+": {
-        plays.push(...steppingMovesOf(position.board, square, ROOK_DIRECTIONS));
-        plays.push(...slidingMovesOf(position.board, square, BISHOP_DIRECTIONS));
+        plays.push(...steppingMovesOf(currentPosition.board, square, ROOK_DIRECTIONS));
+        plays.push(...slidingMovesOf(currentPosition.board, square, BISHOP_DIRECTIONS));
         break;
       }
     }
